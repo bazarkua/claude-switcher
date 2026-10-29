@@ -6,8 +6,8 @@ Local run: October 28, 2026. Host: macOS arm64. Claude Desktop: 4.29.0.
 | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Dependency installation                                      | Passed. npm audit reported zero vulnerabilities.                                                                                                                            |
 | Strict TypeScript, ESLint, formatting                        | Passed.                                                                                                                                                                     |
-| Unit tests                                                   | 31 passed using temporary directories.                                                                                                                                      |
-| Electron application tests                                   | 5 passed against the actual Electron runtime and typed IPC.                                                                                                                 |
+| Unit tests                                                   | 39 passed using temporary directories and mocked usage transport.                                                                                                           |
+| Electron application tests                                   | 6 passed against the actual Electron runtime and typed IPC, including intercepted usage sign-in, account isolation, quota display, and disconnect.                          |
 | Original profile and transcript protection                   | Covered by filesystem fixtures, including rejected writes outside managed roots.                                                                                            |
 | Session merge, deduplication, missing/malformed files        | Passed.                                                                                                                                                                     |
 | Backup, interrupted journal, rollback, newer external writes | Passed.                                                                                                                                                                     |
@@ -35,3 +35,7 @@ The screenshots are from actual Electron runs using disposable profiles. The UI 
 10. Record the result, OS, exact Claude version, and any failure. A sidebar title alone is not a pass.
 
 If continuation fails, preserve the original transcript and backups. Record the exact error without credentials or conversation content. Start a new conversation manually if needed. Claude Switcher does not silently substitute a new summarized session.
+
+## Usage integration
+
+The automated usage flow intercepts requests in a disposable Electron session. It checks the organization connection, separate per-profile usage, 5-hour and weekly remaining bars, reset timestamps, absence of credentials in IPC, and cookie removal after disconnect. Unit fixtures cover invalid data, missing windows, cache expiry, concurrent requests, rate limits, and authentication failures. No real account or network credentials are used. Live subscription authentication and endpoint availability remain unverified.

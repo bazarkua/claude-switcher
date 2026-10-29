@@ -7,12 +7,20 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-d7abbd" alt="MIT license" /></a>
 </p>
 
-A small, local tray app for separate Claude Desktop profiles, with a compact neutral interface and careful Claude Code history synchronization. No backend, telemetry, or credential juggling.
+A small, local tray app for separate Claude Desktop profiles, with a compact neutral interface and careful Claude Code history synchronization. No backend or telemetry.
 
 <p align="center"><img src="docs/app-light.png" width="300" alt="Claude Switcher first-launch interface" /> &nbsp; <img src="docs/app-profiles.png" width="300" alt="Two locally created profiles, both showing sign-in unverified" /></p>
 <p align="center"><sub>Actual application screenshots. The pictured profiles are unauthenticated test profiles.</sub></p>
 
 **Early release:** isolated profile launch was verified against Claude Desktop 4.29.0 on Apple Silicon. Two-account sign-in and authenticated continuation still require interactive testing. Windows and Intel runtime compatibility are not established by the Mac test. This app is unofficial and is not affiliated with or endorsed by Anthropic.
+
+## Your existing history stays in the original profile
+
+**Claude Switcher opens a separate, isolated Claude environment for every account you add. A new environment starts empty. Seeing an empty sidebar does not mean your existing projects or conversations were deleted.**
+
+To return to your usual history, quit Claude normally and open the official Claude app directly from Applications on macOS or the Start menu on Windows, without launching it through the switcher. Check that you are signed into the same account and organization you used before.
+
+The switcher does not move your original profile into these new environments. Code history synchronization only copies supported local session references after the target account has initialized its store. Chat Projects and Cowork history are not imported. Original profile data and transcript files remain untouched.
 
 ## Run locally
 
@@ -37,7 +45,17 @@ The app opens the approved compact tray panel, with neutral light and dark theme
 
 Your original Claude profile remains separate. Browser OAuth callbacks are controlled by Claude and the operating system and may return to the default Claude window. This utility does not replace the `claude://` handler or forward authentication URLs. Verify the account inside each isolated Claude window. If the callback cannot complete there, that Claude version's multi-profile authentication remains unsupported by this app.
 
-Usage and plan values are shown only when a reliable source exists. Currently the interface displays **Usage unavailable** and never labels a profile as live-authenticated.
+## Connect live usage
+
+In **Settings > Usage**, choose **Connect usage** for an account. Sign in to the same Claude account in the web window, then close that window. Confirm the organization to attach to this profile. If the Desktop profile already has a known organization, the connection must match it.
+
+This is a separate web sign-in for usage, not a replacement for signing into Claude Desktop. The organization name is shown beside usage so you can check the connection. Desktop authentication is never inferred from the web sign-in.
+
+Account cards show the remaining percentage for the 5-hour and weekly windows. Settings also shows reset timestamps and the last successful update. Requests are cached for five minutes per profile, with longer backoff after rate limiting. Missing windows, expired sessions, blocked requests, and unsupported responses show unavailable rather than invented values. **Disconnect usage** clears that profile's web session and connection.
+
+Usage is fetched directly from Claude's undocumented web endpoint. Its availability can change. Automated tests cover response handling and the complete connection flow with intercepted fixtures. Authenticated requests against a real subscription have not been verified. There is no developer server or telemetry.
+
+Web sign-in cookies stay in Electron's separate local browser session for that profile. The app does not extract credentials from Claude Desktop, your browsers, the keychain, or Claude Code.
 
 ## What happens to Code history
 

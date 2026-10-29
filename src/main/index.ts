@@ -24,6 +24,7 @@ import { atomicWrite, exists, jsonText, regularText } from './services/files'
 import { createTray } from './tray'
 import { panelPosition } from '../shared/geometry'
 import { UsageMonitor } from './services/UsageMonitor'
+import { UsageConnection } from './services/UsageConnection'
 
 const isMac = process.platform === 'darwin'
 const isWindows = process.platform === 'win32'
@@ -63,6 +64,9 @@ async function main(): Promise<void> {
   const root = join(app.getPath('userData'), 'managed')
   const profiles = new ProfileManager(root)
   await profiles.initialize()
+  const usageConnection = new UsageConnection(root)
+  await usageConnection.initialize()
+  const usageMonitor = new UsageMonitor(usageConnection.fetch)
   const platform: PlatformAdapter = isMac ? new MacOSAdapter() : new WindowsAdapter()
   const overridePath = join(root, 'installation.json')
   if (await exists(overridePath)) {
@@ -105,6 +109,7 @@ async function main(): Promise<void> {
   window = new BrowserWindow({
     width: 380,
     height: 350,
+    useContentSize: true,
     show: false,
     frame: false,
     resizable: false,
@@ -174,12 +179,46 @@ async function main(): Promise<void> {
       ...profiles.snapshot(),
       activeId: await currentProfile(),
       lastUsedId: profiles.snapshot().activeId,
-      usage: new UsageMonitor().snapshot(),
+      usageByProfile: Object.fromEntries(
+        await Promise.all(
+          profiles
+            .snapshot()
+            .profiles.map(async (profile) => [
+              profile.id,
+              await usageMonitor.snapshot(profile.id, usageConnection.organization(profile.id)),
+            ]),
+        ),
+      ),
+      usageConnections: Object.fromEntries(
+        profiles.snapshot().profiles.flatMap((profile) => {
+          const org = usageConnection.organization(profile.id)
+          return org ? [[profile.id, org.name || org.uuid]] : []
+        }),
+      ),
       installation: { found: !!installation, version: installation?.version },
       progress: coordinator.progress,
       lastSync: coordinator.lastSync,
       recoveryPending: await coordinator.recovery.pending(),
     }
+  })
+  handle('usage-connect', async (value) => {
+    idle()
+    const profile = profiles.get(idSchema.parse(value))
+    modal = true
+    try {
+      await usageConnection.connect(profile.id, profile.name, profile.scope?.split('/')[1])
+      usageMonitor.clear(profile.id)
+    } finally {
+      modal = false
+      window.show()
+      window.focus()
+    }
+  })
+  handle('usage-disconnect', async (value) => {
+    idle()
+    const profile = profiles.get(idSchema.parse(value))
+    await usageConnection.disconnect(profile.id)
+    usageMonitor.clear(profile.id)
   })
   handle('resize', async (value) => {
     const requested = panelHeightSchema.parse(value)
@@ -188,10 +227,11 @@ async function main(): Promise<void> {
       ? screen.getDisplayNearestPoint({ x: bounds.x, y: bounds.y })
       : screen.getDisplayMatching(window.getBounds())
     const height = Math.min(requested, display.workArea.height - 16)
-    if (window.getBounds().height === height) return
-    window.setSize(380, height)
+    if (window.getContentBounds().height === height) return
+    window.setContentSize(380, height)
     if (bounds && !testRoot) {
-      const position = panelPosition(bounds, display.workArea, 380, height)
+      const outer = window.getBounds()
+      const position = panelPosition(bounds, display.workArea, outer.width, outer.height)
       window.setPosition(position.x, position.y)
     }
   })

@@ -1,6 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { Bridge, Progress } from '../shared/types'
 const bridge: Bridge = {
+  connectUsage: (id) => ipcRenderer.invoke('switcher:usage-connect', id),
+  disconnectUsage: (id) => ipcRenderer.invoke('switcher:usage-disconnect', id),
   snapshot: () => ipcRenderer.invoke('switcher:snapshot'),
   addProfile: (name) => ipcRenderer.invoke('switcher:add', name),
   renameProfile: (id, name) => ipcRenderer.invoke('switcher:rename', id, name),

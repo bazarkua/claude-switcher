@@ -156,10 +156,12 @@ export function App(): React.JSX.Element {
     }
     Promise.resolve().then(update)
     window.addEventListener('focus', update)
+    const timer = window.setInterval(update, 300_000)
     const unsubscribe = window.claudeSwitcher.onProgress((progress) =>
       setData((current) => (current ? { ...current, progress } : current)),
     )
     return () => {
+      window.clearInterval(timer)
       window.removeEventListener('focus', update)
       unsubscribe()
     }
@@ -225,7 +227,8 @@ export function App(): React.JSX.Element {
       })
   }
   const selected = data?.profiles.find((p) => p.id === selectedId)
-  const usage: UsageSummary = data?.usage ?? { available: false, label: 'Usage unavailable' }
+  const usageFor = (id: string): UsageSummary =>
+    data?.usageByProfile[id] ?? { available: false, label: 'Connect usage in Settings → Usage.' }
   const openEditor = (profile?: Profile): void => {
     setName(profile?.name ?? '')
     setError(null)
@@ -302,7 +305,7 @@ export function App(): React.JSX.Element {
                         {selectedId === profile.id && <Check />}
                       </span>
                     </span>
-                    <UsageLines usage={usage} />
+                    <UsageLines usage={usageFor(profile.id)} />
                   </button>
                 ))
               ) : (
@@ -501,18 +504,55 @@ export function App(): React.JSX.Element {
             ) : tab === 'usage' ? (
               <>
                 <p className="tab-description">Limits and reset times for each account.</p>
-                {!usage.available && (
-                  <p className="usage-explanation">
-                    Usage unavailable. Claude Switcher has no verified source for subscription
-                    quotas. No percentages or reset times are estimated.
-                  </p>
-                )}
-                {data?.profiles.map((profile) => (
-                  <section className="detail-card" key={profile.id}>
-                    <h2>{profile.name}</h2>
-                    <UsageLines usage={usage} detailed />
-                  </section>
-                ))}
+                <p className="usage-explanation">
+                  Connect each account with a separate Claude web sign-in. Sign in to the same
+                  account as its Desktop profile, then close the sign-in window. Refreshes every
+                  five minutes. No percentages or reset times are estimated.
+                </p>
+                {data?.profiles.map((profile) => {
+                  const usage = usageFor(profile.id)
+                  const connected = data.usageConnections[profile.id]
+                  return (
+                    <section className="detail-card" key={profile.id}>
+                      <h2>{profile.name}</h2>
+                      <UsageLines usage={usage} detailed />
+                      <p className="settings-note" role="status">
+                        {usage.available
+                          ? `${usage.organization} · Updated ${new Date(usage.updatedAt).toLocaleTimeString()}`
+                          : usage.label}
+                      </p>
+                      {connected && <p className="settings-note">Connected to {connected}</p>}
+                      <button
+                        className="settings-link"
+                        disabled={busy}
+                        onClick={() =>
+                          void perform(async () => {
+                            unwrap(await window.claudeSwitcher.connectUsage(profile.id))
+                            setNotice(
+                              'Usage connected. Check the organization shown for this account.',
+                            )
+                          })
+                        }
+                      >
+                        {connected ? 'Reconnect usage' : 'Connect usage'}
+                        <ArrowUpRight />
+                      </button>
+                      {connected && (
+                        <button
+                          className="settings-link"
+                          disabled={busy}
+                          onClick={() =>
+                            void perform(async () => {
+                              unwrap(await window.claudeSwitcher.disconnectUsage(profile.id))
+                            })
+                          }
+                        >
+                          Disconnect usage
+                        </button>
+                      )}
+                    </section>
+                  )
+                })}
                 {!data?.profiles.length && (
                   <p className="settings-note">Add an account to see its usage status here.</p>
                 )}

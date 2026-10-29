@@ -45,3 +45,9 @@ Inspection of the installed application archive confirmed the session directory 
 - Windows adapters and NSIS configuration are implemented. Windows/MSIX authentication, virtualization, graceful-close behavior, and live continuation require a Windows machine with Claude installed.
 
 These are version-dependent internals, not an Anthropic-supported integration API. See the [live validation checklist](VALIDATION.md) before relying on cross-account continuation.
+
+## Usage connection
+
+The read-only web endpoints `/api/organizations` and `/api/organizations/{uuid}/usage` are also used by [OpenClaw’s Claude usage implementation](https://github.com/openclaw/openclaw/blob/main/src/infra/provider-usage.fetch.claude.ts). Windows are reported as `five_hour` and `seven_day` with `utilization` and `resets_at`. These are undocumented endpoints, not a supported public subscription API.
+
+This app uses its own optional per-profile web sign-in rather than extracting a session cookie from another app. Organization selection is explicit. If the Desktop scope is known, its organization must match. A web session does not prove that the corresponding Desktop profile is signed in to the same account. Tests intercept HTTP responses and require no credentials. Real authenticated endpoint behavior remains unverified.

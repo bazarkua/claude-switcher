@@ -70,7 +70,13 @@ describe('IPC input validation and unavailable quotas', () => {
         .success,
     ).toBe(false)
   })
-  it('does not fabricate subscription usage', () => {
-    expect(new UsageMonitor().snapshot()).toEqual({ available: false, label: 'Usage unavailable' })
+  it('does not fabricate subscription usage', async () => {
+    const monitor = new UsageMonitor(async () => {
+      throw new Error('Must not request without a connection')
+    })
+    expect(await monitor.snapshot('unconnected')).toEqual({
+      available: false,
+      label: 'Connect usage in Settings → Usage.',
+    })
   })
 })

@@ -110,7 +110,9 @@ test('creates and selects profiles through real IPC, without sample usage or sta
   await expect(page.locator('.account')).toHaveCount(2)
   expect(await page.evaluate(() => document.querySelector('main')?.scrollLeft)).toBe(0)
   const state = await page.evaluate(() => window.claudeSwitcher.snapshot())
-  expect(state.ok && state.value.usage.available).toBe(false)
+  expect(
+    state.ok && Object.values(state.value.usageByProfile).every((usage) => !usage.available),
+  ).toBe(true)
   await capture('docs/app-profiles.png')
 })
 test('keeps menus inside the window and manages accounts in Settings', async () => {
@@ -189,4 +191,84 @@ test('removes list entries while preserving the profile directory', async () => 
   await expect(page.getByRole('button', { name: 'Manage Studio' })).toHaveCount(0)
   const { access } = await import('node:fs/promises')
   await access(join(root, 'managed', 'profiles', String(id)))
+})
+
+test('connects separate usage sessions, displays real response windows, and disconnects cleanly', async () => {
+  const snapshot = await page.evaluate(() => window.claudeSwitcher.snapshot())
+  if (!snapshot.ok) throw new Error(snapshot.error)
+  const personal = snapshot.value.profiles.find((profile) => profile.name === 'Personal')!
+  const orgId = '123e4567-e89b-42d3-a456-426614174000'
+  await app.evaluate(
+    async ({ session, dialog }, { id, orgId }) => {
+      const isolated = session.fromPartition(`persist:claude-switcher-usage-${id}`)
+      await isolated.cookies.set({
+        url: 'https://claude.ai',
+        name: 'fixture-session',
+        value: 'private-test-cookie',
+        secure: true,
+      })
+      await isolated.protocol.handle('https', (request) => {
+        const path = new URL(request.url).pathname
+        if (path === '/api/organizations')
+          return Response.json([{ uuid: orgId, name: 'Fixture organization' }])
+        if (path.endsWith('/usage') && path.startsWith('/api/'))
+          return Response.json({
+            five_hour: { utilization: 25, resets_at: '2026-10-29T02:00:00Z' },
+            seven_day: { utilization: 60, resets_at: '2026-11-01T02:00:00Z' },
+          })
+        return new Response('<h1>Fixture sign-in</h1>', {
+          headers: { 'content-type': 'text/html' },
+        })
+      })
+      dialog.showMessageBox = (async () => ({
+        response: 1,
+        checkboxChecked: false,
+      })) as typeof dialog.showMessageBox
+    },
+    { id: personal.id, orgId },
+  )
+  await page.getByRole('button', { name: 'Settings', exact: true }).click()
+  await page.getByRole('button', { name: 'Usage', exact: true }).click()
+  const personalCard = page
+    .locator('.detail-card')
+    .filter({ has: page.getByRole('heading', { name: 'Personal', exact: true }) })
+  const loginOpened = app.waitForEvent('window')
+  await personalCard.getByRole('button', { name: 'Connect usage', exact: true }).click()
+  const login = await loginOpened
+  await expect(login.getByRole('heading', { name: 'Fixture sign-in' })).toBeVisible()
+  expect(
+    await login.evaluate(
+      () => typeof (window as unknown as { claudeSwitcher?: unknown }).claudeSwitcher,
+    ),
+  ).toBe('undefined')
+  await app.evaluate(({ BrowserWindow }) => {
+    const login = BrowserWindow.getAllWindows().find((window) =>
+      window.getTitle().startsWith('Usage for '),
+    )
+    login?.close()
+  })
+  await expect(
+    personalCard.getByRole('progressbar', { name: '5-hour window remaining' }),
+  ).toHaveAttribute('aria-valuenow', '75')
+  await expect(personalCard.getByRole('progressbar', { name: 'Weekly remaining' })).toHaveAttribute(
+    'aria-valuenow',
+    '40',
+  )
+  await expect(personalCard.getByText('Resets', { exact: false })).toHaveCount(2)
+  const workCard = page
+    .locator('.detail-card')
+    .filter({ has: page.getByRole('heading', { name: 'Work', exact: true }) })
+  await expect(workCard.getByRole('progressbar')).toHaveCount(0)
+  expect(JSON.stringify(await page.evaluate(() => window.claudeSwitcher.snapshot()))).not.toContain(
+    'private-test-cookie',
+  )
+  await personalCard.getByRole('button', { name: 'Disconnect usage', exact: true }).click()
+  await expect(personalCard.getByRole('progressbar')).toHaveCount(0)
+  expect(
+    await app.evaluate(
+      async ({ session }, id) =>
+        (await session.fromPartition(`persist:claude-switcher-usage-${id}`).cookies.get({})).length,
+      personal.id,
+    ),
+  ).toBe(0)
 })

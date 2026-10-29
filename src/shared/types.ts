@@ -53,15 +53,17 @@ export type UsageSummary =
   | { available: false; label: string }
   | {
       available: true
-      fiveHourRemaining: number
-      weeklyRemaining: number
-      fiveHourResetAt: string
-      weeklyResetAt: string
-      plan?: string
+      fiveHourRemaining: number | null
+      weeklyRemaining: number | null
+      fiveHourResetAt: string | null
+      weeklyResetAt: string | null
+      organization: string
+      updatedAt: string
     }
 export type Snapshot = Store & {
   lastUsedId?: string
-  usage: UsageSummary
+  usageByProfile: Record<string, UsageSummary>
+  usageConnections: Record<string, string>
   installation: { found: boolean; version?: string }
   progress: Progress
   lastSync: SyncResult | null
@@ -81,6 +83,8 @@ export type Bridge = {
   recover(): Promise<Reply<void>>
   revealBackups(): Promise<Reply<void>>
   chooseInstallation(): Promise<Reply<void>>
+  connectUsage(id: string): Promise<Reply<void>>
+  disconnectUsage(id: string): Promise<Reply<void>>
   resizePanel(height: number): Promise<Reply<void>>
   dismiss(): void
   quit(): void

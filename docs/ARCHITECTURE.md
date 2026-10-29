@@ -1,6 +1,6 @@
 # Architecture
 
-The Electron main process owns every filesystem and process operation. React renders a compact panel and calls the typed preload bridge. The renderer is sandboxed, context isolated, has Node integration disabled, and cannot submit arbitrary file paths or shell commands. IPC validates the sender, top frame, origin, and parameters. New windows, navigation, and permission requests are denied.
+The Electron main process owns every filesystem and process operation. React renders a compact panel and calls the typed preload bridge. The renderer is sandboxed, context isolated, has Node integration disabled, and cannot submit arbitrary file paths or shell commands. IPC validates the sender, top frame, origin, and parameters. The app renderer denies new windows, navigation, and permission requests. Usage sign-in has a separate sandboxed web window with no bridge.
 
 - `ProfileManager` serializes local settings and profile mutations. Each UUID identifies an isolated directory. Removing an account only removes its list entry.
 - `PlatformAdapter` contains installation discovery, process enumeration, launch, graceful termination, and session root resolution. macOS uses LaunchServices with `--user-data-dir`. Windows supports conventional and MSIX installation discovery, with LocalCache resolution.
@@ -8,7 +8,8 @@ The Electron main process owns every filesystem and process operation. React ren
 - `SessionSync` chooses newest valid records, respects target deletion markers, and writes only validated references. It rejects missing transcripts, malformed targets, SSH records, and unrelated session types. Target-owned fields remain intact.
 - `RecoveryManager` persists a write-ahead journal and checks content hashes before rollback. Every replaced record has a backup. Recovery validates every destination and backup before making changes, and refuses to overwrite newer external changes.
 - `SwitchCoordinator` serializes operations with an exclusive process lock. It checks installation, requests user confirmation for running Claude windows, quits gracefully, checks metadata stability, synchronizes, launches, verifies the expected profile process, and commits. It restores metadata and reopens the previous profile after a failed launch when safe.
-- `UsageMonitor` explicitly reports unavailable quota data. It performs no network requests or credential inspection.
+- `UsageConnection` manages an optional Claude web sign-in in a separate persistent Electron partition per profile. It sends read-only usage requests through that session, restricts sign-in navigation, and persists only the chosen organization. Known Desktop organization scopes must match. Disconnect clears the session.
+- `UsageMonitor` validates server-reported windows, calculates remaining quota, isolates caches per profile and organization, coalesces requests, and observes five-minute polling and rate-limit backoff. Errors replace stale percentages with an unavailable state. Credentials never enter IPC.
 
 A lock owner that no longer exists can be reclaimed. A pending journal still requires recovery before the next switch. Failed or busy operations never silently escalate to killing Claude. The original Claude profile is never a synchronization destination.
 
