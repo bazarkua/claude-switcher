@@ -1,0 +1,39 @@
+appId: dev.bazarkua.claude-switcher
+productName: Claude Switcher
+directories:
+  output: release
+files:
+  - out/**/*
+  - package.json
+extraResources:
+  - from: resources
+    to: resources
+asar: true
+mac:
+  category: public.app-category.productivity
+  icon: resources/icon.icns
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+  hardenedRuntime: true
+  notarize: false
+dmg:
+  title: Claude Switcher
+  backgroundColor: '#f3f0f5'
+  contents:
+    - x: 140
+      y: 170
+    - x: 400
+      y: 170
+      type: link
+      path: /Applications
+win:
+  icon: resources/icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+artifactName: '${name}-${version}-${os}-${arch}.${ext}'
