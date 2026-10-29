@@ -35,7 +35,7 @@ export class WindowsAdapter implements PlatformAdapter {
     }
     return null
   }
-  async processes(_installation: Installation): Promise<ClaudeProcess[]> {
+  async processes(): Promise<ClaudeProcess[]> {
     const raw = await ps("Get-CimInstance Win32_Process -Filter \"Name='Claude.exe'\" | Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress")
     if (!raw) return []
     const rows = JSON.parse(raw) as { ProcessId: number; CommandLine: string } | { ProcessId: number; CommandLine: string }[]

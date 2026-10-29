@@ -143,13 +143,13 @@ export class SwitchCoordinator {
       try {
         if (install && await this.recovery.pending()) {
           this.stage('RECOVERING', 'Protecting your original history')
-          if ((await this.platform.processes(install)).length) throw new Error('Quit Claude, then restore the interrupted sync from Settings.')
+          if ((await this.platform.processes(install)).length) throw new Error('Quit Claude, then restore the interrupted sync from Settings.', { cause: error })
           await this.recovery.rollback()
         }
         if (sourceClosed && !launchAttempted && previousId && install) await this.platform.launch(install, this.profiles.directory(previousId))
       } catch (recoveryError) { this.lastError += ` ${recoveryError instanceof Error ? recoveryError.message : 'Recovery needs attention.'}` }
       this.stage('FAILED', this.lastError)
-      throw new Error(this.lastError)
+      throw new Error(this.lastError, { cause: error })
     } finally { this.busy = false; await release() }
   }
 }

@@ -78,7 +78,7 @@ async function main(): Promise<void> {
     webPreferences: { preload: join(__dirname, '../preload/index.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true },
   })
   const devURL = !app.isPackaged ? process.env.ELECTRON_RENDERER_URL : undefined
-  const rendererURL = devURL ?? pathToFileURL(join(__dirname, '../renderer/index.html')).href
+  const rendererURL = new URL(devURL ?? pathToFileURL(join(__dirname, '../renderer/index.html')).href).href
   const trusted = (event: IpcMainInvokeEvent): boolean => event.sender === window.webContents && event.senderFrame === window.webContents.mainFrame && event.senderFrame?.url === rendererURL
   const handle = (channel: string, fn: (...args: unknown[]) => Promise<unknown>): void => {
     ipcMain.handle(`switcher:${channel}`, async (event, ...args): Promise<Reply<unknown>> => {
@@ -117,7 +117,7 @@ async function main(): Promise<void> {
     const settings = settingsSchema.parse(value)
     if (!testRoot && settings.launchAtLogin !== profiles.snapshot().settings.launchAtLogin) {
       if (!app.isPackaged) throw new Error('Launch at login is available after installing the packaged app.')
-      app.setLoginItemSettings({ openAtLogin: settings.launchAtLogin, openAsHidden: true, args: ['--hidden'] })
+      app.setLoginItemSettings({ openAtLogin: settings.launchAtLogin, args: ['--hidden'] })
     }
     await profiles.settings(settings); applyAppearance(settings)
   })
