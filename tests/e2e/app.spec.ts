@@ -12,12 +12,23 @@ let app: ElectronApplication
 let page: Page
 let root: string
 const capture = async (path: string): Promise<void> => {
+  const maximumHeight = await app.evaluate(({ BrowserWindow, screen }) => {
+    const window = BrowserWindow.getAllWindows()[0]
+    return Math.min(820, screen.getDisplayMatching(window.getBounds()).workArea.height - 16)
+  })
   await expect
     .poll(() =>
       page.evaluate(
-        () =>
+        (maximumHeight) =>
           innerHeight ===
-          Math.max(220, Math.ceil(document.querySelector('main')!.getBoundingClientRect().height)),
+          Math.min(
+            maximumHeight,
+            Math.max(
+              220,
+              Math.ceil(document.querySelector('main')!.getBoundingClientRect().height),
+            ),
+          ),
+        maximumHeight,
       ),
     )
     .toBe(true)
@@ -38,7 +49,8 @@ const addAccount = async (name: string): Promise<void> => {
   await page.getByRole('button', { name: 'Dismiss message' }).click()
   await expect(page.getByRole('alert')).toHaveCount(0)
 }
-test.beforeAll(async () => {
+test.beforeEach(async () => {
+  const testInfo = test.info()
   root = await mkdtemp(join(tmpdir(), 'claude-switcher-electron-'))
   app = await electron.launch({
     args: ['.'],
@@ -51,8 +63,12 @@ test.beforeAll(async () => {
   })
   page = await app.firstWindow()
   await page.waitForLoadState('domcontentloaded')
+  if (!/^(renders|creates)/.test(testInfo.title)) {
+    await addAccount('Personal')
+    await addAccount(testInfo.title.startsWith('removes') ? 'Studio' : 'Work')
+  }
 })
-test.afterAll(async () => {
+test.afterEach(async () => {
   await app?.close()
   if (root) await rm(root, { recursive: true, force: true })
 })
@@ -164,6 +180,7 @@ test('uses neutral colors across settings and dialogs and exposes credential-fre
   ).not.toContain('token')
 })
 test('removes list entries while preserving the profile directory', async () => {
+  await page.getByRole('button', { name: 'Settings', exact: true }).click()
   await page.getByRole('button', { name: 'Profiles', exact: true }).click()
   const state = await page.evaluate(() => window.claudeSwitcher.snapshot())
   const id = state.ok && state.value.profiles.find((profile) => profile.name === 'Studio')!.id
