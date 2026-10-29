@@ -1521,3 +1521,54 @@ html[data-theme='dark'] .dialog-buttons button:first-child:hover {
   background: #494949;
   color: #eeeeee;
 }
+/* Shared neutral settings controls in both themes. */
+.settings-tabs,
+.segmented {
+  background: #ededed;
+}
+.settings-tabs button,
+.segmented button {
+  color: #757575;
+}
+.settings-tabs button.selected,
+.segmented button.selected {
+  background: #fff;
+  color: #3f3f3f;
+  box-shadow: 0 1px 3px #00000008;
+}
+.setting-block > label,
+.setting-row strong {
+  color: #555;
+}
+.setting-row p,
+.settings-note,
+.settings-link,
+.tab-description {
+  color: #7e7e7e;
+}
+.settings-version {
+  color: #8b8b8b;
+  border-color: #e6e6e6;
+}
+html[data-theme='dark'] .settings-tabs,
+html[data-theme='dark'] .segmented {
+  background: #1e1e1e;
+}
+html[data-theme='dark'] .settings-tabs button,
+html[data-theme='dark'] .segmented button {
+  color: #aaa;
+}
+html[data-theme='dark'] .settings-tabs button.selected,
+html[data-theme='dark'] .segmented button.selected {
+  background: #3b3b3b;
+  color: #eee;
+}
+html[data-theme='dark'] .setting-block > label,
+html[data-theme='dark'] .setting-row strong {
+  color: #d3d3d3;
+}
+html[data-theme='dark'] .setting-row p,
+html[data-theme='dark'] .settings-link,
+html[data-theme='dark'] .settings-note {
+  color: #aaa;
+}

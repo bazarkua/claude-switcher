@@ -10,7 +10,14 @@ export const recordSchema = z.object({
   sessionId: z.string().regex(/^local_[a-f0-9-]{36}$/i),
   cliSessionId: z.uuid(),
   cwd: z.string().min(1).max(32768),
-  lastActivityAt: z.number().finite().min(978307200000).max(Date.now() + 86400000),
+  lastActivityAt: z
+    .number()
+    .finite()
+    .min(978307200000)
+    .refine(
+      (value) => value <= Date.now() + 86400000,
+      'Session timestamp is too far in the future.',
+    ),
   createdAt: z.number().finite().optional(),
   lastFocusedAt: z.number().finite().optional(),
   originCwd: z.string().optional(),
@@ -22,6 +29,9 @@ export const recordSchema = z.object({
   completedTurns: z.number().finite().optional(),
   titleTurn: z.number().finite().optional(),
   transcriptUnavailable: z.boolean().optional(),
+  previousCliSessionIds: z.array(z.uuid()).max(1000).optional(),
+  sessionType: z.never().optional(),
+  sshConfig: z.never().optional(),
 }) // Unknown fields are stripped: never move nested MCP config or token-bearing state.
 export type SessionRecord = z.infer<typeof recordSchema>
 export type SessionStore = { directory: string; scope: string }
@@ -52,9 +62,12 @@ export class SessionManager {
       try {
         const path = join(store.directory, entry.name)
         const data = recordSchema.parse(JSON.parse(await regularText(path)))
-        if (basename(path) !== `${data.sessionId}.json`) throw new Error('Session identifier mismatch.')
+        if (basename(path) !== `${data.sessionId}.json`)
+          throw new Error('Session identifier mismatch.')
         records.push({ path, data })
-      } catch { malformed++ }
+      } catch {
+        malformed++
+      }
     }
     return { records, malformed }
   }
@@ -76,7 +89,8 @@ export class SessionManager {
   async validateTranscript(path: string, id: string): Promise<boolean> {
     await contained(this.projectsRoot, path)
     const info = await lstat(path)
-    if (!info.isFile() || info.isSymbolicLink() || info.size === 0 || info.size > 128 * 1024 * 1024) return false
+    if (!info.isFile() || info.isSymbolicLink() || info.size === 0 || info.size > 128 * 1024 * 1024)
+      return false
     const handle = await open(path, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0))
     const lines = createInterface({ input: handle.createReadStream(), crlfDelay: Infinity })
     let turns = 0
@@ -86,9 +100,15 @@ export class SessionManager {
         const value: unknown = JSON.parse(line)
         if (!value || typeof value !== 'object') return false
         const record = value as Record<string, unknown>
-        if ((record.type === 'user' || record.type === 'assistant') && record.sessionId === id) turns++
+        if ((record.type === 'user' || record.type === 'assistant') && record.sessionId === id)
+          turns++
       }
       return turns > 0
-    } catch { return false } finally { lines.close(); await handle.close().catch(() => {}) }
+    } catch {
+      return false
+    } finally {
+      lines.close()
+      await handle.close().catch(() => {})
+    }
   }
 }

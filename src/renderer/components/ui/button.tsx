@@ -4,8 +4,26 @@ import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import type { ComponentProps } from 'react'
 export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs))
-const variants = cva('button', { variants: { variant: { default: 'button-primary', secondary: 'button-secondary', ghost: 'button-ghost', danger: 'button-danger' }, size: { default: '', icon: 'button-icon', small: 'button-small' } }, defaultVariants: { variant: 'default', size: 'default' } })
-export function Button({ className, variant, size, asChild = false, ...props }: ComponentProps<'button'> & VariantProps<typeof variants> & { asChild?: boolean }): React.JSX.Element {
+const variants = cva('button', {
+  variants: {
+    variant: {
+      default: 'button-primary',
+      secondary: 'button-secondary',
+      ghost: 'button-ghost',
+      danger: 'button-danger',
+    },
+    size: { default: '', icon: 'button-icon', small: 'button-small' },
+  },
+  defaultVariants: { variant: 'default', size: 'default' },
+})
+export function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: ComponentProps<'button'> &
+  VariantProps<typeof variants> & { asChild?: boolean }): React.JSX.Element {
   const Comp = asChild ? Slot : 'button'
   return <Comp className={cn(variants({ variant, size }), className)} {...props} />
 }

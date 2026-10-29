@@ -19,7 +19,7 @@ mac:
   notarize: false
 dmg:
   title: Claude Switcher
-  backgroundColor: '#f3f0f5'
+  backgroundColor: '#f4f3f0'
   contents:
     - x: 140
       y: 170
