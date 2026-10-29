@@ -40,13 +40,32 @@ function notify(text) {
 function usage(label, remaining, reset, weekly = false) {
   return `<div class="usage-row"><div class="usage-labels"><span>${label}</span><span class="usage-left ${remaining < 30 ? 'low' : ''}">${remaining}% left</span></div><div class="progress ${weekly ? '' : 'clay'}" role="progressbar" aria-label="${label} remaining, example data" aria-valuenow="${remaining}" aria-valuemin="0" aria-valuemax="100"><span style="--value:${remaining}%"></span></div><div class="usage-caption"><span>Resets ${weekly ? '' : 'in '}${reset}</span><span class="window-label">${weekly ? '7 days' : '5 hours'}</span></div></div>`
 }
+function compactUsage(a) {
+  if (!example) return '<p class="compact-unavailable">Usage unavailable</p>'
+  return `<div class="compact-usage"><div><span>5-hour <strong>${a.remaining}% left</strong></span><i style="--value:${a.remaining}%"></i></div><div><span>Weekly <strong>${a.weekly}% left</strong></span><i style="--value:${a.weekly}%"></i></div></div>`
+}
+function renderDetails() {
+  $('usage-details').innerHTML = accounts
+    .map(
+      (a) =>
+        `<section class="detail-card"><h2>${escapeHTML(a.name)}</h2>${example ? usage('5-hour window', a.remaining, a.reset) + usage('Weekly limit', a.weekly, a.weeklyReset, true) : '<p class="compact-unavailable">Usage unavailable. Verified data is required.</p>'}</section>`,
+    )
+    .join('')
+  $('settings-accounts').innerHTML = accounts
+    .map(
+      (a) =>
+        `<div class="manage-profile"><span class="avatar"><img src="claude-favicon.ico" alt="Claude"></span><span>${escapeHTML(a.name)}</span><button class="more" aria-label="Manage ${escapeHTML(a.name)}" data-menu="${a.id}">${icon('dots')}</button></div>`,
+    )
+    .join('')
+}
 function render() {
+  renderDetails()
   $('count').textContent = accounts.length
   $('accounts').innerHTML = accounts.length
     ? accounts
         .map(
           (a) =>
-            `<article class="account ${a.id === selected ? 'selected' : ''} ${a.id === 2 ? 'work' : ''}" tabindex="0" role="button" aria-label="Select ${escapeHTML(a.name)}" aria-pressed="${a.id === selected}" data-account="${a.id}"><div class="account-heading"><span class="avatar"><img src="claude-favicon.ico" alt="Claude"></span><div class="account-identity"><div class="account-name-row"><span class="account-name">${escapeHTML(a.name)}</span>${a.current ? '<span class="current-badge">Current</span>' : ''}</div><p class="account-subtitle">${example ? 'Pro · example account' : 'Sign-in unverified'}</p></div><span class="account-select-indicator">${a.id === selected ? icon('check') : ''}</span><button class="more" aria-label="Manage ${escapeHTML(a.name)}" data-menu="${a.id}">${icon('dots')}</button></div>${example ? usage('5-hour window', a.remaining, a.reset) + usage('Weekly limit', a.weekly, a.weeklyReset, true) : `<div class="unavailable">${icon('history')}<div><strong>Usage unavailable</strong>5-hour and weekly limits will appear here when verified data is available.</div></div>`}</article>`,
+            `<article class="account ${a.id === selected ? 'selected' : ''} ${a.id === 2 ? 'work' : ''}" tabindex="0" role="button" aria-label="Select ${escapeHTML(a.name)}" aria-pressed="${a.id === selected}" data-account="${a.id}"><div class="account-heading"><span class="avatar"><img src="claude-favicon.ico" alt="Claude"></span><div class="account-identity"><div class="account-name-row"><span class="account-name">${escapeHTML(a.name)}</span>${a.current ? '<span class="current-badge">Current</span>' : ''}</div></div><span class="account-select-indicator">${a.id === selected ? icon('check') : ''}</span></div>${compactUsage(a)}</article>`,
         )
         .join('')
     : `<div class="empty-card"><span class="avatar"><img src="claude-favicon.ico" alt="Claude"></span><h2>Add your first account</h2><p>Create a separate profile, then<br>sign in through Claude.</p></div>`
@@ -273,3 +292,23 @@ function paint(time) {
 }
 resize()
 requestAnimationFrame(paint)
+
+document.querySelector('.settings-tabs').addEventListener('click', (e) => {
+  const button = e.target.closest('[data-tab]')
+  if (!button) return
+  document
+    .querySelectorAll('[data-tab]')
+    .forEach((b) => b.classList.toggle('selected', b === button))
+  for (const tab of ['general', 'usage', 'profiles'])
+    $('tab-' + tab).hidden = tab !== button.dataset.tab
+})
+$('settings-add').onclick = () => openAccount()
+$('settings-accounts').addEventListener('click', (e) => {
+  const button = e.target.closest('[data-menu]')
+  if (!button) return
+  menuId = Number(button.dataset.menu)
+  const bounds = button.getBoundingClientRect(),
+    app = document.querySelector('.app').getBoundingClientRect()
+  $('account-menu').style.top = `${bounds.bottom - app.top + 5}px`
+  $('account-menu').hidden = false
+})

@@ -1150,3 +1150,258 @@ html[data-theme='dark'] .toast {
 .primary:disabled svg {
   transform: none;
 }
+/* Compact switching surface; supporting controls live in Settings. */
+.app {
+  width: 380px;
+  padding: 23px 22px 23px;
+  border-radius: 27px;
+}
+.app-header {
+  margin-bottom: 25px;
+}
+.page-heading {
+  margin-bottom: 17px;
+}
+h1 {
+  font-size: 21px;
+  letter-spacing: -0.55px;
+  font-weight: 500;
+}
+.count {
+  display: none;
+}
+.accounts {
+  gap: 11px;
+  max-height: 370px;
+}
+.account {
+  padding: 17px 17px 16px;
+  border-radius: 21px;
+}
+.account-heading {
+  margin-bottom: 15px;
+  gap: 10px;
+}
+.avatar {
+  width: 35px;
+  height: 35px;
+}
+.avatar img {
+  width: 24px;
+  height: 24px;
+}
+.account-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+.account-select-indicator {
+  width: 18px;
+  height: 18px;
+}
+.current-badge {
+  font-size: 9px;
+  padding: 0 5px;
+}
+.compact-usage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+.compact-usage > div > span {
+  font-size: 10px;
+  color: #8b8d87;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  line-height: 15px;
+  margin-bottom: 6px;
+}
+.compact-usage strong {
+  font-size: 10px;
+  font-weight: 500;
+  color: #74716a;
+  font-variant-numeric: tabular-nums;
+}
+.compact-usage i {
+  display: block;
+  background: #efefec;
+  height: 3px;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.compact-usage i::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--value);
+  border-radius: 3px;
+  background: #c9ac91;
+}
+.compact-usage > div + div i::after {
+  background: #babbb5;
+}
+.compact-unavailable {
+  font-size: 11px;
+  color: #989b91;
+  margin: 0;
+  line-height: 1.6;
+}
+.action-area {
+  padding-top: 20px;
+}
+.primary {
+  height: 45px;
+  border-radius: 14px;
+}
+.preferences-view {
+  min-height: 0;
+  max-height: 72vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: 1px 2px 1px 0;
+}
+.preferences-view h1 {
+  margin: 19px 0;
+}
+.settings-tabs {
+  display: flex;
+  padding: 3px;
+  background: #eceee8;
+  border-radius: 11px;
+  gap: 3px;
+  margin-bottom: 19px;
+}
+.settings-tabs button {
+  flex: 1;
+  border-radius: 8px;
+  padding: 8px 7px;
+  font-size: 11px;
+  color: #979c8f;
+}
+.settings-tabs button.selected {
+  background: #fff;
+  color: #666f5b;
+  box-shadow: 0 1px 4px #00000006;
+}
+.setting-block {
+  margin-top: 13px;
+  padding: 16px;
+  border-radius: 17px;
+}
+.setting-divider {
+  height: 1px;
+  background: #e9ece2;
+  margin: 17px 0;
+}
+.setting-row p {
+  font-size: 10px;
+}
+.setting-row strong {
+  font-size: 11px;
+}
+.settings-link {
+  font-size: 11px;
+  padding: 13px 3px;
+}
+.settings-note {
+  font-size: 10px;
+  margin: 20px 3px 15px;
+}
+.settings-version {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e6e9e0;
+  padding-top: 14px;
+  font-size: 10px;
+  color: #a4aa98;
+}
+.tab-description {
+  font-size: 11px;
+  color: #939b86;
+  margin: 0 0 17px;
+  line-height: 1.5;
+}
+.detail-card {
+  padding: 17px;
+  background: #fff;
+  border: 1px solid #e4e8db;
+  border-radius: 17px;
+  margin-bottom: 12px;
+}
+.detail-card h2 {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  margin: 0 0 18px;
+}
+.manage-profile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 15px 13px;
+  border: 1px solid #e3e7db;
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.manage-profile > span:nth-child(2) {
+  flex: 1;
+}
+.manage-profile .more {
+  margin-right: 0;
+}
+.toast {
+  bottom: 78px;
+  left: 22px;
+  right: 22px;
+}
+html[data-theme='dark'] .compact-usage > div > span {
+  color: #9c9c96;
+}
+html[data-theme='dark'] .compact-usage strong {
+  color: #c9c5bb;
+}
+html[data-theme='dark'] .compact-usage i {
+  background: #40403e;
+}
+html[data-theme='dark'] .compact-usage i::after {
+  background: #b69578;
+}
+html[data-theme='dark'] .compact-usage > div + div i::after {
+  background: #93938d;
+}
+html[data-theme='dark'] .settings-tabs {
+  background: #1e1e1e;
+}
+html[data-theme='dark'] .settings-tabs button {
+  color: #969690;
+}
+html[data-theme='dark'] .settings-tabs button.selected {
+  background: #3b3b38;
+  color: #ddddd5;
+}
+html[data-theme='dark'] .setting-divider,
+html[data-theme='dark'] .settings-version {
+  border-color: #ffffff10;
+}
+html[data-theme='dark'] .setting-divider {
+  background: #ffffff0a;
+}
+html[data-theme='dark'] .detail-card,
+html[data-theme='dark'] .manage-profile {
+  background: #2d2d2b;
+  border-color: #3f3f3b;
+}
+html[data-theme='dark'] .tab-description,
+html[data-theme='dark'] .settings-version,
+html[data-theme='dark'] .compact-unavailable {
+  color: #a4a49b;
+}
+@media (max-width: 440px) {
+  .app {
+    width: 100%;
+  }
+}

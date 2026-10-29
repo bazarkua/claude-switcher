@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Claude Switcher · Interface study 04</title>
+    <title>Claude Switcher · Interface study 05</title>
     <link rel="stylesheet" href="prototype.css" />
   </head>
   <body>
     <canvas id="backdrop" aria-hidden="true"></canvas>
-    <div class="study-label"><span>Claude Switcher</span><span>Interface study 04</span></div>
+    <div class="study-label"><span>Claude Switcher</span><span>Interface study 05</span></div>
     <main class="app" aria-label="Claude Switcher prototype">
       <header class="app-header">
         <a class="brand" href="#" aria-label="Claude Switcher home"
@@ -30,29 +30,13 @@
       <section class="accounts-view" id="accounts-view">
         <div class="page-heading">
           <div>
-            <h1>Accounts<span class="count" id="count">2</span></h1>
-            <p>Your profiles, ready when you are.</p>
+            <h1>Switch account<span class="count" id="count">2</span></h1>
           </div>
         </div>
         <div id="accounts" class="accounts" role="group" aria-label="Choose an account"></div>
         <div class="action-area">
-          <div class="history-option">
-            <span
-              ><svg><use href="#history" /></svg>Keep Code history</span
-            ><button
-              id="sync"
-              class="toggle"
-              role="switch"
-              aria-checked="true"
-              aria-label="Keep Code history"
-            >
-              <i></i>
-            </button>
-          </div>
           <button class="primary" id="switch">
-            <span id="switch-text">Switch to Work</span><svg><use href="#arrow" /></svg></button
-          ><button class="desktop" id="desktop">
-            Open Claude Desktop<svg><use href="#external" /></svg>
+            <span id="switch-text">Switch to Work</span><svg><use href="#arrow" /></svg>
           </button>
         </div>
       </section>
@@ -60,49 +44,79 @@
         <button id="back" class="back-button">
           <svg><use href="#back" /></svg>Accounts
         </button>
-        <h1>Preferences</h1>
-        <p class="subheading">A few things to make it yours.</p>
-        <div class="setting-block">
-          <label>Appearance</label>
-          <div class="segmented" id="appearance">
-            <button data-theme="light" class="selected">
-              <svg><use href="#sun" /></svg>Light</button
-            ><button data-theme="dark">
-              <svg><use href="#moon" /></svg>Dark
-            </button>
-          </div>
-        </div>
-        <div class="setting-block">
-          <div class="setting-row">
-            <div>
-              <strong>Open at login</strong>
-              <p>Start quietly in your menu bar.</p>
+        <h1>Settings</h1>
+        <nav class="settings-tabs" aria-label="Settings sections">
+          <button data-tab="general" class="selected">General</button
+          ><button data-tab="usage">Usage</button><button data-tab="profiles">Profiles</button>
+        </nav>
+        <div id="tab-general" class="settings-tab">
+          <div class="setting-block">
+            <label>Appearance</label>
+            <div class="segmented" id="appearance">
+              <button data-theme="light" class="selected">
+                <svg><use href="#sun" /></svg>Light</button
+              ><button data-theme="dark">
+                <svg><use href="#moon" /></svg>Dark
+              </button>
             </div>
-            <button
-              class="toggle"
-              role="switch"
-              aria-checked="false"
-              aria-label="Open at login"
-              id="login"
-            >
-              <i></i>
-            </button>
           </div>
+          <div class="setting-block">
+            <div class="setting-row">
+              <div>
+                <strong>Keep Code history</strong>
+                <p>Sync local references when switching.</p>
+              </div>
+              <button
+                id="sync"
+                class="toggle"
+                role="switch"
+                aria-checked="true"
+                aria-label="Keep Code history"
+              >
+                <i></i>
+              </button>
+            </div>
+            <div class="setting-divider"></div>
+            <div class="setting-row">
+              <div>
+                <strong>Open at login</strong>
+                <p>Start quietly in the menu bar.</p>
+              </div>
+              <button
+                id="login"
+                class="toggle"
+                role="switch"
+                aria-checked="false"
+                aria-label="Open at login"
+              >
+                <i></i>
+              </button>
+            </div>
+          </div>
+          <button class="settings-link" id="desktop">
+            Open Claude Desktop<svg><use href="#external" /></svg></button
+          ><button class="settings-link" id="diagnostics">
+            Diagnostics<svg><use href="#arrow" /></svg></button
+          ><button class="settings-link" id="backups">
+            Open session backups<svg><use href="#external" /></svg>
+          </button>
+          <p class="settings-note">
+            Your profiles stay on this device.<br />Unofficial. Not affiliated with Anthropic.
+          </p>
+          <footer class="settings-version">Claude Switcher <span>Version 0.1.0</span></footer>
         </div>
-        <button class="settings-link" id="diagnostics">
-          Diagnostics<svg><use href="#arrow" /></svg></button
-        ><button class="settings-link" id="backups">
-          Open session backups<svg><use href="#external" /></svg>
-        </button>
-        <p class="settings-note">
-          Unofficial. Not affiliated with Anthropic.<br />Authentication is handled by Claude.
-        </p>
+        <div id="tab-usage" class="settings-tab" hidden>
+          <p class="tab-description">Limits and reset times for each account.</p>
+          <div id="usage-details"></div>
+        </div>
+        <div id="tab-profiles" class="settings-tab" hidden>
+          <p class="tab-description">Rename, check sign-in, or remove a profile.</p>
+          <div id="settings-accounts"></div>
+          <button id="settings-add" class="settings-link">
+            Add account<svg><use href="#plus" /></svg>
+          </button>
+        </div>
       </section>
-      <footer class="app-footer">
-        <span
-          ><svg><use href="#shield" /></svg>Private. On this device.</span
-        ><span>0.1.0</span>
-      </footer>
       <div class="toast" role="status" id="toast"></div>
       <dialog id="account-dialog">
         <form id="account-form">
