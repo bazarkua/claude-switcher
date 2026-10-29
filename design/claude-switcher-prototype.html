@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Claude Switcher · Design study</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        background: #16191d;
+        color: #eee;
+        display: grid;
+        place-items: center;
+        min-height: 100dvh;
+        padding: 42px 18px 100px;
+        background-image:
+          radial-gradient(ellipse at 13% 30%, #31375145, transparent 42%),
+          radial-gradient(ellipse at 90% 75%, #24244180, transparent 38%);
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+        border: 0;
+        color: inherit;
+        -webkit-tap-highlight-color: transparent;
+      }
+      button:focus-visible,
+      input:focus-visible {
+        outline: 2px solid #b6b5e7;
+        outline-offset: 5px;
+      }
+      button {
+        transition:
+          transform 0.22s,
+          background 0.22s,
+          opacity 0.22s;
+      }
+      button:active {
+        transform: scale(0.96);
+      }
+      button:disabled {
+        cursor: default;
+        opacity: 0.6;
+      }
+      svg {
+        display: block;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.35;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .study {
+        position: fixed;
+        top: 22px;
+        left: 27px;
+        color: #85878e;
+        font-size: 11px;
+        letter-spacing: 0.1px;
+      }
+      .study span {
+        color: #d3d1d8;
+        margin-right: 12px;
+      }
+      .phone {
+        --text: #f2f1f4;
+        --muted: #89888f;
+        --base: #08090b;
+        position: relative;
+        width: 390px;
+        height: 694px;
+        max-width: 100%;
+        border-radius: 37px;
+        background: var(--base);
+        padding: 27px 23px 20px;
+        border: 1px solid #ffffff19;
+        box-shadow:
+          0 2px 1px #ffffff09 inset,
+          0 28px 70px #0006,
+          0 0 0 7px #0000001a;
+        overflow: hidden;
+        isolation: isolate;
+        color: var(--text);
+      }
+      .phone::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        box-shadow: inset 0 0 28px #0002;
+        z-index: 10;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 31px;
+      }
+      .wordmark {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 450;
+        letter-spacing: -0.35px;
+      }
+      .mark {
+        width: 19px;
+        height: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 3px);
+        grid-template-rows: repeat(4, 3px);
+        gap: 3px;
+        transform: rotate(-12deg);
+      }
+      .mark i {
+        border-radius: 50%;
+        background: #e8e7ed;
+      }
+      .mark i:nth-child(3n) {
+        opacity: 0.35;
+      }
+      .top-actions {
+        display: flex;
+        gap: 7px;
+      }
+      .circle {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #ffffff07;
+        color: #a7a6ad;
+      }
+      .circle:hover {
+        background: #ffffff13;
+        color: white;
+      }
+      .top-actions .circle svg {
+        width: 15px;
+        height: 15px;
+      }
+      .heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin: 32px 3px 22px;
+      }
+      .heading h1 {
+        font-size: 26px;
+        letter-spacing: -1.1px;
+        font-weight: 430;
+        margin: 0;
+      }
+      .heading p {
+        font-size: 10px;
+        color: #717178;
+        margin: 0;
+        letter-spacing: 0.1px;
+      }
+      .carousel {
+        margin: 0 -23px;
+        padding: 0 23px;
+        display: flex;
+        gap: 13px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        cursor: grab;
+        touch-action: pan-x;
+      }
+      .carousel::-webkit-scrollbar {
+        display: none;
+      }
+      .profile {
+        position: relative;
+        flex: 0 0 324px;
+        height: 267px;
+        scroll-snap-align: center;
+        border-radius: 43px;
+        background: #171335;
+        color: white;
+        text-align: left;
+        overflow: hidden;
+        isolation: isolate;
+        border: 1px solid #e5ddff40;
+        box-shadow:
+          inset 0 1px 3px #e7d7ff9e,
+          inset 0 0 17px #c6a6ff4a,
+          0 5px 20px #0004;
+        transition:
+          filter 0.4s,
+          transform 0.4s;
+        outline-offset: 3px;
+      }
+      .profile:not(.selected) {
+        filter: saturate(0.8) brightness(0.8);
+      }
+      .profile::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background:
+          radial-gradient(
+            ellipse 95% 60% at 50% -9%,
+            #bba4e8 0%,
+            #6960b1 23%,
+            #322758 57%,
+            transparent 82%
+          ),
+          radial-gradient(ellipse 35% 120% at -7% 48%, #9072e8 0%, #4a3495 27%, transparent 72%),
+          radial-gradient(ellipse 31% 100% at 108% 68%, #b995f2 0%, #6146a9 33%, transparent 77%),
+          radial-gradient(ellipse 90% 30% at 45% 114%, #5b4baf, transparent 85%),
+          linear-gradient(155deg, #17122b, #100b25 56%, #0b1022);
+      }
+      .profile::after {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        pointer-events: none;
+        border-radius: 42px;
+        box-shadow:
+          inset 0 0 12px #a58ed756,
+          inset 0 18px 28px #c2a8eb1f,
+          inset 0 -2px 4px #b1a2f435;
+        border: 1px solid #d8c9ff16;
+        background: linear-gradient(117deg, #ffffff05, transparent 40%);
+      }
+      .profile.work::before {
+        background:
+          radial-gradient(
+            ellipse 95% 60% at 50% -10%,
+            #e78bca 0%,
+            #ac427e 28%,
+            #572046 57%,
+            transparent 82%
+          ),
+          radial-gradient(ellipse 35% 120% at -7% 48%, #b65aaa 0%, #702861 27%, transparent 72%),
+          radial-gradient(ellipse 31% 100% at 108% 68%, #da92cd 0%, #82396d 33%, transparent 77%),
+          radial-gradient(ellipse 90% 30% at 45% 114%, #b24885, transparent 85%),
+          linear-gradient(155deg, #2e1026, #220b21 56%, #1a0c21);
+      }
+      .profile.slate::before {
+        filter: hue-rotate(55deg);
+      }
+      .profile-top {
+        position: absolute;
+        left: 23px;
+        right: 21px;
+        top: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .profile-top > span {
+        font-size: 11px;
+        letter-spacing: -0.1px;
+        color: #ede3f4e0;
+      }
+      .profile-menu {
+        width: 23px;
+        height: 23px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: transparent;
+        color: #f1eaffad;
+        font-size: 17px;
+        line-height: 0;
+        letter-spacing: 1px;
+        padding-bottom: 7px;
+      }
+      .profile-menu:hover {
+        background: #ffffff12;
+      }
+      .profile-center {
+        position: absolute;
+        inset: 68px 20px auto;
+        text-align: center;
+      }
+      .matrix {
+        width: 120px;
+        height: 70px;
+        display: block;
+        margin: auto;
+        overflow: visible;
+      }
+      .profile-name {
+        font-size: 21px;
+        font-weight: 380;
+        letter-spacing: -0.8px;
+        margin: 13px 0 5px;
+      }
+      .profile-sub {
+        font-size: 9px;
+        color: #b4a5c8;
+        margin: 0;
+        font-weight: 400;
+        letter-spacing: 0.1px;
+      }
+      .profile-bottom {
+        position: absolute;
+        left: 24px;
+        right: 23px;
+        bottom: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 9px;
+        color: #b9acc8;
+      }
+      .profile-bottom .selected-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .selected-dot {
+        height: 5px;
+        width: 5px;
+        background: #ddd7f0;
+        border-radius: 50%;
+        box-shadow: 0 0 7px #e5d5ff44;
+      }
+      .profile-trace {
+        position: absolute;
+        bottom: 0;
+        left: 30px;
+        right: 30px;
+        height: 65px;
+        pointer-events: none;
+        background: radial-gradient(circle, #b2a0d64d 0.7px, transparent 1px);
+        background-size: 8px 8px;
+        mask-image: radial-gradient(ellipse at bottom, #000, transparent 69%);
+        z-index: -1;
+      }
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        margin: 18px 0 0;
+        height: 6px;
+      }
+      .pagination button {
+        height: 4px;
+        width: 4px;
+        border-radius: 50%;
+        padding: 0;
+        background: #ffffff30;
+      }
+      .pagination button.active {
+        background: #e9e4f2;
+      }
+      .context-line {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        margin: 24px 3px 19px;
+      }
+      .context-line svg {
+        width: 14px;
+        height: 14px;
+        color: #88848e;
+        flex-shrink: 0;
+      }
+      .context-line p {
+        font-size: 10px;
+        font-weight: 400;
+        letter-spacing: 0.05px;
+        line-height: 1.5;
+        color: #939097;
+        margin: 0;
+      }
+      .context-line p span {
+        color: #5f5d66;
+      }
+      .switch-panel {
+        position: relative;
+        border-radius: 34px;
+        padding: 19px 17px 15px;
+        isolation: isolate;
+        background: #0a0c22;
+        border: 1px solid #b4b6ee40;
+        box-shadow:
+          inset 0 1px 4px #c4bbf78a,
+          inset 0 0 15px #9892e354;
+        overflow: hidden;
+      }
+      .switch-panel::before {
+        position: absolute;
+        content: '';
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            ellipse 110% 68% at 50% -26%,
+            #a0a0da 0%,
+            #5558ab 35%,
+            #232e77 61%,
+            transparent 90%
+          ),
+          radial-gradient(ellipse 27% 160% at -9% 80%, #6568c5, transparent 84%),
+          radial-gradient(ellipse 30% 140% at 110% 70%, #5968c3, transparent 82%),
+          linear-gradient(130deg, #090c25, #05081b 55%, #10133e);
+      }
+      .switch-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px 17px;
+        font-size: 10px;
+        color: #b7bad5;
+      }
+      .switch-meta span {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .switch-meta svg {
+        height: 13px;
+        width: 13px;
+        color: #c4c7e1;
+      }
+      .switch-meta .scope-label {
+        font-size: 9px;
+        color: #7b80a3;
+      }
+      .switch-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .sync-toggle {
+        flex-shrink: 0;
+        border-radius: 50%;
+        width: 43px;
+        height: 43px;
+        background: #c0bdd414;
+        display: grid;
+        place-items: center;
+        box-shadow: inset 0 1px 1px #ffffff0c;
+        color: #a8accb;
+      }
+      .sync-toggle:hover {
+        background: #c0bdd426;
+      }
+      .sync-toggle[aria-pressed='false'] {
+        color: #5b5f83;
+      }
+      .sync-toggle svg {
+        height: 17px;
+        width: 17px;
+      }
+      .switch-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+        padding: 5px 5px 5px 22px;
+        background: #b9b2d01b;
+        border-radius: 28px;
+        box-shadow: inset 0 1px 2px #ffffff08;
+        color: #e4e3ef;
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: -0.2px;
+      }
+      .switch-main:hover {
+        background: #c5bfda2b;
+      }
+      .switch-main .arrow {
+        display: grid;
+        place-items: center;
+        background: #e4e5e7;
+        color: #232534;
+        width: 33px;
+        height: 33px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 2px 7px #0002;
+      }
+      .switch-main .arrow svg {
+        height: 17px;
+        width: 17px;
+        stroke-width: 1.5;
+      }
+      .switch-main span:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .open-desktop {
+        width: 100%;
+        margin: 20px 0 0;
+        padding: 4px 0;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        color: #77767e;
+        font-size: 10px;
+      }
+      .open-desktop svg {
+        height: 11px;
+        width: 11px;
+      }
+      .open-desktop:hover {
+        color: #cbc7d1;
+      }
+      .bottom {
+        position: absolute;
+        bottom: 19px;
+        left: 27px;
+        right: 27px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 8px;
+        color: #4b4b52;
+        letter-spacing: 0.2px;
+      }
+      .bottom span:first-child {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .bottom .tiny-dot {
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: #707079;
+      }
+      .toolbar {
+        position: fixed;
+        bottom: 23px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        gap: 3px;
+        border: 1px solid #ffffff11;
+        border-radius: 30px;
+        background: #22252ae8;
+        backdrop-filter: blur(30px);
+        box-shadow: 0 5px 22px #0003;
+      }
+      .toolbar button {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 15px;
+        border-radius: 22px;
+        font-size: 10px;
+        color: #93949c;
+        background: none;
+        white-space: nowrap;
+      }
+      .toolbar button.active {
+        background: #ffffff12;
+        color: #e7e5ed;
+      }
+      .toolbar button svg {
+        height: 12px;
+        width: 12px;
+      }
+      .toolbar .sep {
+        width: 1px;
+        height: 14px;
+        background: #ffffff12;
+        margin: 0 3px;
+      }
+      .sample-note {
+        position: fixed;
+        bottom: 80px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 9px;
+        color: #676870;
+        letter-spacing: 0.1px;
+        pointer-events: none;
+      }
+      .toast {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        bottom: 57px;
+        background: #24232bec;
+        border: 1px solid #ffffff16;
+        box-shadow: 0 5px 15px #0004;
+        padding: 13px 17px;
+        border-radius: 16px;
+        font-size: 10px;
+        color: #c5c0d1;
+        z-index: 30;
+        opacity: 0;
+        transform: translateY(5px);
+        transition:
+          opacity 0.25s,
+          transform 0.25s;
+        pointer-events: none;
+        backdrop-filter: blur(24px);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .screen {
+        transition: opacity 0.2s;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .settings-screen {
+        position: absolute;
+        inset: 85px 24px 55px;
+        background: var(--base);
+        z-index: 15;
+      }
+      .settings-screen h2 {
+        margin: 31px 1px 27px;
+        font-size: 27px;
+        letter-spacing: -1px;
+        font-weight: 400;
+      }
+      .settings-label {
+        font-size: 10px;
+        color: var(--muted);
+        margin: 22px 2px 12px;
+      }
+      .appearance {
+        display: flex;
+        gap: 8px;
+      }
+      .appearance button {
+        width: 50%;
+        height: 80px;
+        border-radius: 20px;
+        border: 1px solid #ffffff12;
+        background: #ffffff04;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 11px;
+        color: #aaa3b6;
+      }
+      .appearance button.active {
+        border-color: #a99bc569;
+        background: #6e568f1a;
+      }
+      .appearance svg {
+        width: 18px;
+        height: 18px;
+      }
+      .setting-row {
+        padding: 19px 2px;
+        border-bottom: 1px solid #ffffff0b;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .setting-row strong {
+        font-size: 12px;
+        font-weight: 400;
+      }
+      .setting-row p {
+        font-size: 10px;
+        color: var(--muted);
+        margin: 5px 0 0;
+      }
+      .toggle {
+        width: 30px;
+        height: 18px;
+        padding: 3px;
+        border-radius: 12px;
+        background: #7a6ab2;
+      }
+      .toggle::after {
+        content: '';
+        display: block;
+        height: 12px;
+        width: 12px;
+        transform: translateX(12px);
+        border-radius: 50%;
+        background: #e9e4ef;
+        transition: transform 0.2s;
+      }
+      .toggle.off {
+        background: #ffffff18;
+      }
+      .toggle.off::after {
+        transform: translateX(0);
+      }
+      .setting-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        padding: 19px 2px;
+        background: none;
+        border-bottom: 1px solid #ffffff0b;
+        color: #a9a4b2;
+      }
+      .setting-link svg {
+        height: 14px;
+        width: 14px;
+      }
+      .settings-foot {
+        color: #64616d;
+        font-size: 10px;
+        line-height: 1.6;
+        margin: 25px 2px;
+      }
+      .overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 40;
+        display: grid;
+        place-items: center;
+        background: #0005;
+        backdrop-filter: blur(13px);
+        padding: 25px;
+      }
+      .dialog {
+        border: 1px solid #d4c7f22b;
+        border-radius: 28px;
+        padding: 25px;
+        width: 100%;
+        background: radial-gradient(ellipse at 50% 0, #71618b22, transparent 70%), #19171ff5;
+        box-shadow:
+          inset 0 1px 1px #ffffff14,
+          0 20px 40px #0003;
+      }
+      .dialog h2 {
+        font-weight: 400;
+        font-size: 21px;
+        letter-spacing: -0.6px;
+        margin: 0 0 9px;
+      }
+      .dialog p {
+        font-size: 11px;
+        line-height: 1.7;
+        color: #918b9d;
+        margin: 0 0 23px;
+      }
+      .dialog label {
+        display: block;
+        font-size: 10px;
+        color: #8e879c;
+        margin-bottom: 8px;
+      }
+      .dialog input {
+        width: 100%;
+        border: 1px solid #ffffff17;
+        border-radius: 12px;
+        padding: 13px;
+        background: #ffffff04;
+        color: var(--text);
+        font-size: 12px;
+        margin-bottom: 20px;
+      }
+      .dialog-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .dialog-actions button {
+        padding: 10px 17px;
+        font-size: 11px;
+        border-radius: 20px;
+        background: #ffffff08;
+        color: #bcb5c9;
+      }
+      .dialog-actions button:last-child {
+        background: #e3ddef;
+        color: #35303e;
+      }
+      .empty .profile {
+        flex-basis: 342px;
+      }
+      .empty .profile-top > span {
+        color: #d8cdea;
+      }
+      .empty .profile-center {
+        top: 73px;
+      }
+      .empty .profile-name {
+        font-size: 20px;
+      }
+      .empty .profile-sub {
+        margin-top: 8px;
+        color: #b4a7c5;
+      }
+      .empty .profile-bottom {
+        justify-content: center;
+        font-size: 9px;
+      }
+      .empty .profile::before {
+        filter: saturate(0.65);
+      }
+      .spin {
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      html[data-theme='light'] body {
+        background-color: #dfe2ea;
+        background-image:
+          radial-gradient(ellipse at 10% 20%, #b7b0e860, transparent 50%),
+          radial-gradient(ellipse at 90% 85%, #e2bfd260, transparent 50%);
+      }
+      html[data-theme='light'] .phone {
+        --text: #34343a;
+        --muted: #96939d;
+        --base: #f3f4f0;
+        border-color: #ffffffdf;
+        box-shadow:
+          inset 0 2px 3px #fff,
+          0 28px 70px #62687735,
+          0 0 0 7px #ffffff28;
+      }
+      html[data-theme='light'] .mark i {
+        background: #777581;
+      }
+      html[data-theme='light'] .circle {
+        color: #8f8a98;
+        background: #bdb8c415;
+      }
+      html[data-theme='light'] .circle:hover {
+        background: #bdb8c42e;
+        color: #48434f;
+      }
+      html[data-theme='light'] .heading p {
+        color: #aaa5af;
+      }
+      html[data-theme='light'] .profile {
+        background: #c7bdd4;
+        color: white;
+        border-color: #ffffffe6;
+        box-shadow:
+          inset 0 2px 5px #ffffffbd,
+          inset 0 0 18px #fff9,
+          0 7px 20px #a7a1b51a;
+      }
+      html[data-theme='light'] .profile::before {
+        background:
+          radial-gradient(ellipse 100% 60% at 50% -10%, #f3cfe2 0%, #d3c7db 40%, transparent 85%),
+          radial-gradient(ellipse 40% 120% at -9% 48%, #c2c7f3 0%, #bac3e0 27%, transparent 82%),
+          radial-gradient(ellipse 40% 110% at 110% 68%, #a9b6e4 0%, #c0b5dd 37%, transparent 85%),
+          radial-gradient(ellipse 90% 38% at 45% 114%, #efe7a7, transparent 90%),
+          linear-gradient(155deg, #d5cbd3, #bcb1cd 56%, #aebbd1);
+      }
+      html[data-theme='light'] .profile.work::before {
+        background:
+          radial-gradient(ellipse 100% 55% at 50% -10%, #f798ed 0%, #fab1df 32%, transparent 85%),
+          radial-gradient(ellipse 40% 120% at -9% 48%, #f4a7d1 0%, #dfb8ce 27%, transparent 82%),
+          radial-gradient(ellipse 40% 110% at 110% 68%, #f9a7d3 0%, #c0b5dd 37%, transparent 85%),
+          radial-gradient(ellipse 90% 38% at 45% 114%, #fd9b6d, transparent 90%),
+          linear-gradient(155deg, #ddc6d4, #c9bdd2 56%, #d9c5cb);
+      }
+      html[data-theme='light'] .profile-sub,
+      html[data-theme='light'] .profile-bottom {
+        color: #ffffffad;
+      }
+      html[data-theme='light'] .profile::after {
+        box-shadow:
+          inset 0 0 16px #ffffff76,
+          inset 0 18px 28px #ffffff24,
+          inset 0 -2px 4px #ffffffe0;
+        border-color: #ffffff26;
+      }
+      html[data-theme='light'] .profile:not(.selected) {
+        filter: saturate(0.7) brightness(1.03);
+      }
+      html[data-theme='light'] .pagination button {
+        background: #9d97a447;
+      }
+      html[data-theme='light'] .pagination button.active {
+        background: #7d758c;
+      }
+      html[data-theme='light'] .context-line p {
+        color: #8f8998;
+      }
+      html[data-theme='light'] .context-line p span {
+        color: #bab4bf;
+      }
+      html[data-theme='light'] .context-line svg {
+        color: #9f95ae;
+      }
+      html[data-theme='light'] .switch-panel {
+        background: #d2cedc;
+        border-color: #fff;
+        box-shadow:
+          inset 0 1px 5px #fff,
+          inset 0 0 20px #ffffff85,
+          0 4px 10px #a59baf12;
+      }
+      html[data-theme='light'] .switch-panel::before {
+        background:
+          radial-gradient(ellipse 120% 100% at 50% -40%, #d1bfe5, #c6c5e1 50%, transparent 90%),
+          radial-gradient(ellipse 50% 140% at -9% 80%, #a9c4ea, transparent 90%),
+          radial-gradient(ellipse 45% 140% at 110% 70%, #eac9e4, transparent 90%),
+          linear-gradient(130deg, #c9ceda, #d2ccd8 55%, #e1d3d5);
+      }
+      html[data-theme='light'] .switch-meta {
+        color: #777387;
+      }
+      html[data-theme='light'] .switch-meta svg {
+        color: #8f879f;
+      }
+      html[data-theme='light'] .switch-meta .scope-label {
+        color: #a49aad;
+      }
+      html[data-theme='light'] .sync-toggle {
+        background: #ffffff45;
+        color: #8a829a;
+      }
+      html[data-theme='light'] .switch-main {
+        background: #3d3c43;
+        color: #f1eef5;
+        box-shadow: inset 0 1px 1px #ffffff2b;
+      }
+      html[data-theme='light'] .switch-main:hover {
+        background: #4e4956;
+      }
+      html[data-theme='light'] .switch-main .arrow {
+        background: #f2edf6;
+        color: #55505d;
+      }
+      html[data-theme='light'] .open-desktop {
+        color: #99929f;
+      }
+      html[data-theme='light'] .bottom {
+        color: #bcb7c1;
+      }
+      html[data-theme='light'] .appearance button {
+        border-color: #958caa25;
+        color: #9b91a7;
+        background: #e5e2e720;
+      }
+      html[data-theme='light'] .appearance button.active {
+        background: #fff9;
+        border-color: #b3a5c657;
+      }
+      html[data-theme='light'] .setting-row,
+      html[data-theme='light'] .setting-link {
+        border-color: #a59aad1a;
+      }
+      html[data-theme='light'] .dialog {
+        background: #f2eff8f5;
+        border-color: #fff;
+        box-shadow: 0 20px 40px #65567125;
+      }
+      html[data-theme='light'] .dialog input {
+        background: #fff7;
+        border-color: #a798bb30;
+      }
+      html[data-theme='light'] .toast {
+        background: #eae5f1f0;
+        color: #81718f;
+        border-color: #fff;
+      }
+      html[data-theme='light'] .study {
+        color: #90909c;
+      }
+      html[data-theme='light'] .study span {
+        color: #5d596a;
+      }
+      html[data-theme='light'] .toolbar {
+        background: #f8f8f9db;
+        border-color: #fff;
+        box-shadow: 0 5px 22px #7b73821a;
+      }
+      html[data-theme='light'] .toolbar button {
+        color: #9c95a4;
+      }
+      html[data-theme='light'] .toolbar button.active {
+        color: #6f637e;
+        background: #b6a8cb20;
+      }
+      html[data-theme='light'] .sample-note {
+        color: #99929f;
+      }
+      @media (max-height: 850px) {
+        body {
+          padding-top: 58px;
+          padding-bottom: 115px;
+        }
+        .phone {
+          transform: scale(0.9);
+          margin: -35px 0;
+        }
+      }
+      @media (max-width: 440px) {
+        body {
+          padding-left: 9px;
+          padding-right: 9px;
+        }
+        .study {
+          left: 20px;
+          top: 17px;
+        }
+        .phone {
+          transform: scale(0.92);
+          margin: -28px -10px;
+        }
+        .toolbar button {
+          padding: 9px 10px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg style="display: none" aria-hidden="true">
+      <defs>
+        <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+        <symbol id="settings" viewBox="0 0 24 24">
+          <path d="M4 7h7m4 0h5M4 17h5m4 0h7" />
+          <circle cx="13" cy="7" r="2" />
+          <circle cx="11" cy="17" r="2" />
+        </symbol>
+        <symbol id="arrow" viewBox="0 0 24 24"><path d="M6 12h12m-5-5 5 5-5 5" /></symbol>
+        <symbol id="external" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10" /></symbol>
+        <symbol id="code" viewBox="0 0 24 24">
+          <path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14" />
+        </symbol>
+        <symbol id="sync" viewBox="0 0 24 24">
+          <path d="M4 10a8 8 0 0 1 13-5l3 3M20 14a8 8 0 0 1-13 5l-3-3M20 3v5h-5M4 21v-5h5" />
+        </symbol>
+        <symbol id="sun" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" />
+        </symbol>
+        <symbol id="moon" viewBox="0 0 24 24">
+          <path d="M20 14a8.5 8.5 0 0 1-10-11A9 9 0 1 0 20 14Z" />
+        </symbol>
+        <symbol id="chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></symbol>
+        <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></symbol>
+        <symbol id="shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z" />
+          <path d="m8 12 3 3 5-6" />
+        </symbol>
+      </defs>
+    </svg>
+    <div class="study"><span>Claude Switcher</span>Interface study / 01</div>
+    <main class="phone" aria-label="Claude Switcher interactive design prototype">
+      <header class="top">
+        <div class="wordmark">
+          <div class="mark" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          Claude Switcher
+        </div>
+        <div class="top-actions">
+          <button class="circle" id="settingsButton" aria-label="Preferences">
+            <svg><use href="#settings" /></svg></button
+          ><button class="circle" id="addButton" aria-label="Add account">
+            <svg><use href="#plus" /></svg>
+          </button>
+        </div>
+      </header>
+      <div class="screen" id="accountsScreen">
+        <div class="heading">
+          <h1>Accounts</h1>
+          <p id="profileCount">02 profiles on this device</p>
+        </div>
+        <div class="carousel" id="carousel"></div>
+        <div class="pagination" id="pagination"></div>
+        <div class="context-line">
+          <svg><use href="#shield" /></svg>
+          <p>Local profiles. <span>Sign-in stays with Claude.</span></p>
+        </div>
+        <section class="switch-panel">
+          <div class="switch-meta">
+            <span
+              ><svg><use href="#code" /></svg>Code history</span
+            ><span class="scope-label" id="syncLabel">Keep local context</span>
+          </div>
+          <div class="switch-actions">
+            <button
+              class="sync-toggle"
+              id="syncButton"
+              aria-label="Toggle Code history sync"
+              aria-pressed="true"
+            >
+              <svg><use href="#sync" /></svg></button
+            ><button class="switch-main" id="switchButton">
+              <span id="switchLabel">Open Personal</span
+              ><span class="arrow"
+                ><svg><use href="#arrow" /></svg
+              ></span>
+            </button>
+          </div>
+        </section>
+        <button class="open-desktop" id="openButton">
+          Open Claude Desktop <svg><use href="#external" /></svg>
+        </button>
+      </div>
+      <section class="settings-screen hidden" id="settingsScreen">
+        <h2>Preferences</h2>
+        <p class="settings-label">Appearance</p>
+        <div class="appearance">
+          <button id="darkChoice" class="active">
+            <svg><use href="#moon" /></svg>Dark</button
+          ><button id="lightChoice">
+            <svg><use href="#sun" /></svg>Light
+          </button>
+        </div>
+        <div class="setting-row" style="margin-top: 20px">
+          <div>
+            <strong>Code history</strong>
+            <p>Carry local references between profiles</p>
+          </div>
+          <button
+            class="toggle"
+            id="settingsSync"
+            aria-label="Toggle Code history sync"
+            aria-pressed="true"
+          ></button>
+        </div>
+        <div class="setting-row">
+          <div>
+            <strong>Open at login</strong>
+            <p>Start quietly in the menu bar</p>
+          </div>
+          <button
+            class="toggle off"
+            id="loginToggle"
+            aria-label="Toggle open at login"
+            aria-pressed="false"
+          ></button>
+        </div>
+        <button class="setting-link" id="diagnosticsButton">
+          Diagnostics <svg><use href="#chevron" /></svg></button
+        ><button class="setting-link" id="backupsButton">
+          Session backups <svg><use href="#external" /></svg>
+        </button>
+        <p class="settings-foot">
+          All profile data stays on this computer.<br />Unofficial. Not affiliated with Anthropic.
+        </p>
+      </section>
+      <div class="bottom">
+        <span><i class="tiny-dot"></i>On this device</span><span>0.1</span>
+      </div>
+      <div class="toast" id="toast" role="status"></div>
+      <div class="overlay hidden" id="overlay">
+        <form class="dialog" id="addForm">
+          <h2>New account</h2>
+          <p>Give the profile a name. You’ll sign in through Claude’s own window.</p>
+          <label for="accountName">Profile name</label
+          ><input
+            id="accountName"
+            autocomplete="off"
+            maxlength="30"
+            placeholder="Personal, Work…"
+            required
+          />
+          <div class="dialog-actions">
+            <button type="button" id="cancelAdd">Cancel</button
+            ><button type="submit">Add profile</button>
+          </div>
+        </form>
+      </div>
+    </main>
+    <div class="sample-note">
+      Interactive prototype · sample profiles · no accounts or files are changed
+    </div>
+    <nav class="toolbar" aria-label="Prototype controls">
+      <button id="themeDark" class="active">
+        <svg><use href="#moon" /></svg>Dark</button
+      ><button id="themeLight">
+        <svg><use href="#sun" /></svg>Light</button
+      ><span class="sep"></span><button id="populated" class="active">Accounts</button
+      ><button id="emptyState">Empty state</button>
+    </nav>
+    <script>
+      const $ = (id) => document.getElementById(id)
+      const icon = (name, cls = '') => `<svg class="${cls}"><use href="#${name}"/></svg>`
+      const glyphs = {
+        0: ['01110', '11011', '11011', '11011', '11011', '11011', '01110'],
+        1: ['00100', '01100', '00100', '00100', '00100', '00100', '01110'],
+        2: ['01110', '10001', '00001', '00010', '00100', '01000', '11111'],
+        3: ['11110', '00001', '00001', '01110', '00001', '00001', '11110'],
+        4: ['00010', '00110', '01010', '10010', '11111', '00010', '00010'],
+        5: ['11111', '10000', '10000', '11110', '00001', '00001', '11110'],
+        6: ['01110', '10000', '10000', '11110', '10001', '10001', '01110'],
+        7: ['11111', '00001', '00010', '00100', '01000', '01000', '01000'],
+        8: ['01110', '10001', '10001', '01110', '10001', '10001', '01110'],
+        9: ['01110', '10001', '10001', '01111', '00001', '00001', '01110'],
+      }
+      function matrix(text) {
+        let dots = ''
+        ;[...text].forEach((char, i) => {
+          const g = glyphs[char] || glyphs['0']
+          g.forEach((row, y) =>
+            [...row].forEach((on, x) => {
+              if (on === '1')
+                dots += `<circle cx="${i * 45 + x * 7 + 5}" cy="${y * 8 + 5}" r="1.65" fill="currentColor" stroke="none"/>`
+            }),
+          )
+        })
+        return `<svg class="matrix" viewBox="0 0 ${text.length * 45 - 7} 60" aria-label="Profile ${text}">${dots}</svg>`
+      }
+      let accounts = [
+          { name: 'Personal', tone: '', open: true },
+          { name: 'Work', tone: 'work', open: false },
+        ],
+        selected = 0,
+        sync = true,
+        busy = false,
+        settings = false,
+        toastTimer,
+        scrollTimer
+      function esc(s) {
+        return s.replace(
+          /[&<>"']/g,
+          (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
+        )
+      }
+      function toast(text) {
+        $('toast').textContent = text
+        $('toast').classList.add('show')
+        clearTimeout(toastTimer)
+        toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2600)
+      }
+      function render(scroll = true) {
+        const empty = !accounts.length
+        $('carousel').classList.toggle('empty', empty)
+        $('profileCount').textContent =
+          String(accounts.length).padStart(2, '0') + ' profiles on this device'
+        $('populated').classList.toggle('active', !empty)
+        $('emptyState').classList.toggle('active', empty)
+        if (empty) {
+          $('carousel').innerHTML =
+            `<article class="profile selected"><div class="profile-top"><span>A profile of your own</span></div><div class="profile-center">${matrix('00')}<h2 class="profile-name">No accounts yet</h2><p class="profile-sub">Add an account to get started</p></div><div class="profile-trace"></div><div class="profile-bottom">Authentication is handled by Claude</div></article>`
+        } else {
+          $('carousel').innerHTML = accounts
+            .map(
+              (a, i) =>
+                `<article class="profile ${a.tone} ${selected === i ? 'selected' : ''}" data-index="${i}" tabindex="0" aria-label="Select ${esc(a.name)}"><div class="profile-top"><span>${a.open ? 'Current profile' : 'Separate profile'}</span><button class="profile-menu" aria-label="Manage ${esc(a.name)}" data-menu="${i}">···</button></div><div class="profile-center">${matrix(String(i + 1).padStart(2, '0'))}<h2 class="profile-name">${esc(a.name)}</h2><p class="profile-sub">${a.open ? 'Open in Claude' : 'Sign-in unverified'}</p></div><div class="profile-trace"></div><div class="profile-bottom"><span>Usage unavailable</span><span class="selected-label">${selected === i ? '<i class="selected-dot"></i>Selected' : ''}</span></div></article>`,
+            )
+            .join('')
+        }
+        $('pagination').innerHTML = accounts
+          .map(
+            (a, i) =>
+              `<button class="${i === selected ? 'active' : ''}" data-page="${i}" aria-label="Select ${esc(a.name)}"></button>`,
+          )
+          .join('')
+        $('switchLabel').textContent = empty
+          ? 'Add an account'
+          : (accounts[selected].open ? 'Open ' : 'Switch to ') + accounts[selected].name
+        if (scroll && !empty) $('carousel').scrollTo({ left: selected * 337, behavior: 'smooth' })
+      }
+      function select(i, scroll = true) {
+        if (busy || i === selected) return
+        selected = i
+        render(scroll)
+      }
+      $('carousel').addEventListener('click', (e) => {
+        const menu = e.target.closest('[data-menu]')
+        if (menu) {
+          e.stopPropagation()
+          toast('Profile menu: rename, check sign-in, or remove.')
+          return
+        }
+        const card = e.target.closest('[data-index]')
+        if (card) select(Number(card.dataset.index))
+      })
+      $('carousel').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const card = e.target.closest('[data-index]')
+          if (card) select(Number(card.dataset.index))
+        }
+      })
+      $('carousel').addEventListener(
+        'scroll',
+        () => {
+          clearTimeout(scrollTimer)
+          scrollTimer = setTimeout(() => {
+            if (!accounts.length) return
+            const i = Math.max(
+              0,
+              Math.min(accounts.length - 1, Math.round($('carousel').scrollLeft / 337)),
+            )
+            if (i !== selected) select(i, false)
+          }, 180)
+        },
+        { passive: true },
+      )
+      $('pagination').onclick = (e) => {
+        const b = e.target.closest('[data-page]')
+        if (b) select(Number(b.dataset.page))
+      }
+      function add() {
+        if (settings) showSettings(false)
+        $('overlay').classList.remove('hidden')
+        $('accountName').value = ''
+        setTimeout(() => $('accountName').focus(), 40)
+      }
+      $('addButton').onclick = add
+      $('cancelAdd').onclick = () => $('overlay').classList.add('hidden')
+      $('overlay').onclick = (e) => {
+        if (e.target === $('overlay')) $('overlay').classList.add('hidden')
+      }
+      $('addForm').onsubmit = (e) => {
+        e.preventDefault()
+        const name = $('accountName').value.trim()
+        if (!name) return
+        accounts.push({ name, tone: accounts.length % 2 ? 'work' : '', open: false })
+        selected = accounts.length - 1
+        $('overlay').classList.add('hidden')
+        render()
+        toast('Prototype profile added. The app would open Claude sign-in.')
+      }
+      $('switchButton').onclick = () => {
+        if (!accounts.length) {
+          add()
+          return
+        }
+        if (busy) return
+        busy = true
+        $('switchButton').disabled = true
+        const a = accounts[selected]
+        const steps = a.open
+          ? ['Opening ' + a.name]
+          : ['Checking local history', 'Opening ' + a.name]
+        let i = 0
+        $('switchLabel').textContent = steps[0]
+        $('switchButton').querySelector('.arrow').innerHTML = icon('sync', 'spin')
+        const t = setInterval(() => {
+          i++
+          if (i < steps.length) {
+            $('switchLabel').textContent = steps[i]
+            return
+          }
+          clearInterval(t)
+          accounts.forEach((a, j) => (a.open = j === selected))
+          busy = false
+          $('switchButton').disabled = false
+          $('switchButton').querySelector('.arrow').innerHTML = icon('arrow')
+          render(false)
+          toast('Prototype switch complete. No real Claude account was opened.')
+        }, 800)
+      }
+      function setSync() {
+        sync = !sync
+        $('syncButton').setAttribute('aria-pressed', sync)
+        $('settingsSync').setAttribute('aria-pressed', sync)
+        $('settingsSync').classList.toggle('off', !sync)
+        $('syncLabel').textContent = sync ? 'Keep local context' : 'Sync off'
+        toast(sync ? 'Local Code history sync enabled.' : 'Local Code history sync disabled.')
+      }
+      $('syncButton').onclick = setSync
+      $('settingsSync').onclick = setSync
+      function showSettings(on) {
+        settings = on
+        $('accountsScreen').classList.toggle('hidden', on)
+        $('settingsScreen').classList.toggle('hidden', !on)
+        $('settingsButton').innerHTML = icon(on ? 'close' : 'settings')
+        $('settingsButton').setAttribute('aria-label', on ? 'Close preferences' : 'Preferences')
+      }
+      $('settingsButton').onclick = () => showSettings(!settings)
+      function theme(t) {
+        document.documentElement.dataset.theme = t
+        for (const [id, name] of [
+          ['themeDark', 'dark'],
+          ['darkChoice', 'dark'],
+          ['themeLight', 'light'],
+          ['lightChoice', 'light'],
+        ])
+          $(id).classList.toggle('active', t === name)
+      }
+      $('themeDark').onclick = $('darkChoice').onclick = () => theme('dark')
+      $('themeLight').onclick = $('lightChoice').onclick = () => theme('light')
+      $('emptyState').onclick = () => {
+        accounts = []
+        selected = 0
+        showSettings(false)
+        render()
+      }
+      $('populated').onclick = () => {
+        accounts = [
+          { name: 'Personal', tone: '', open: true },
+          { name: 'Work', tone: 'work', open: false },
+        ]
+        selected = 0
+        showSettings(false)
+        render()
+      }
+      $('openButton').onclick = () => toast('The desktop app would open Claude here.')
+      $('diagnosticsButton').onclick = () =>
+        toast('Prototype: version, profile, and session diagnostics go here.')
+      $('backupsButton').onclick = () =>
+        toast('The desktop app would open your local backup folder.')
+      $('loginToggle').onclick = () => {
+        const on = $('loginToggle').getAttribute('aria-pressed') !== 'true'
+        $('loginToggle').setAttribute('aria-pressed', on)
+        $('loginToggle').classList.toggle('off', !on)
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          $('overlay').classList.add('hidden')
+          showSettings(false)
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+          e.preventDefault()
+          add()
+        }
+      })
+      render()
+    </script>
+  </body>
+</html>
