@@ -1528,12 +1528,12 @@ html[data-theme='dark'] .dialog-buttons button:first-child:hover {
 }
 .settings-tabs button,
 .segmented button {
-  color: #757575;
+  color: #626262;
 }
 .settings-tabs button.selected,
 .segmented button.selected {
   background: #fff;
-  color: #3f3f3f;
+  color: #262626;
   box-shadow: 0 1px 3px #00000008;
 }
 .setting-block > label,
@@ -1544,7 +1544,7 @@ html[data-theme='dark'] .dialog-buttons button:first-child:hover {
 .settings-note,
 .settings-link,
 .tab-description {
-  color: #7e7e7e;
+  color: #686868;
 }
 .settings-version {
   color: #8b8b8b;
@@ -1751,7 +1751,7 @@ html[data-theme='dark'] .usage-explanation {
 }
 .account-menu [role='menuitem'][data-highlighted] {
   background: #f1f1f1;
-  color: #3f3f3f;
+  color: #262626;
 }
 .account-menu [role='menuitem'] svg {
   width: 13px;
