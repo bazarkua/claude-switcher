@@ -256,7 +256,7 @@ function paint(time) {
   last = time
   const dark = document.documentElement.dataset.theme === 'dark',
     t = reduced.matches ? 0 : time * 0.00009
-  ctx.fillStyle = dark ? '#22251f' : '#efefed'
+  ctx.fillStyle = dark ? '#181818' : '#efefed'
   ctx.fillRect(0, 0, w, h)
   for (let i = 0; i < 4; i++) {
     const x = w * (0.1 + i * 0.28) + Math.sin(t + i * 1.8) * w * 0.1 + (px - 0.5) * 15,
@@ -265,7 +265,7 @@ function paint(time) {
     const g = ctx.createRadialGradient(x, y, 0, x, y, r)
     g.addColorStop(
       0,
-      dark ? (i % 2 ? '#c9956830' : '#bbc3ad14') : i % 2 ? '#dac7b233' : '#ffffff99',
+      dark ? (i % 2 ? '#c4a78d0c' : '#bcbcbc0a') : i % 2 ? '#dac7b233' : '#ffffff99',
     )
     g.addColorStop(1, '#ffffff00')
     ctx.fillStyle = g

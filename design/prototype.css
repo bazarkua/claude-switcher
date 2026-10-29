@@ -483,8 +483,7 @@ h1 {
   background: linear-gradient(155deg, #d99d77, #c78a65);
   box-shadow:
     inset 0 1px 1px #f7d9c4a0,
-    0 4px 0 #b87a5618,
-    0 6px 15px #ad774720;
+    0 3px 12px -4px #80573424;
   color: #fff;
   font-size: 13px;
   font-weight: 550;
@@ -510,8 +509,7 @@ h1 {
 .primary:hover {
   box-shadow:
     inset 0 1px 1px #f7d9c4a0,
-    0 4px 0 #b87a5618,
-    0 9px 19px #ad77472a;
+    0 5px 16px -4px #8057342b;
   transform: translateY(-1px);
 }
 .primary:active {
@@ -876,82 +874,6 @@ dialog input {
     transform: none;
   }
 }
-html[data-theme='dark'] {
-  color: #e1e5db;
-}
-html[data-theme='dark'] body {
-  background: #21231f;
-}
-html[data-theme='dark'] .app {
-  background: #292c26f2;
-  border-color: #d2dec515;
-  box-shadow:
-    inset 0 1px 0 #e8f3dc0c,
-    0 25px 60px #0003;
-}
-html[data-theme='dark'] .account {
-  background: #32372e;
-  border-color: #45503c;
-}
-html[data-theme='dark'] .account.selected {
-  border-color: #b28f6c;
-}
-html[data-theme='dark'] .avatar {
-  background: #b18a6430;
-}
-html[data-theme='dark'] .account.work .avatar {
-  background: #a2b58b20;
-}
-html[data-theme='dark'] .current-badge {
-  background: #a1b48320;
-  color: #c1d4a7;
-}
-html[data-theme='dark'] .progress {
-  background: #46513a;
-}
-html[data-theme='dark'] .usage-labels {
-  color: #b9c4ac;
-}
-html[data-theme='dark'] .usage-left {
-  color: #d4c0a6;
-}
-html[data-theme='dark'] .usage-caption,
-html[data-theme='dark'] .account-subtitle {
-  color: #a1af93;
-}
-html[data-theme='dark'] .count,
-html[data-theme='dark'] .icon-button {
-  background: #d4e4bc0b;
-  color: #a6b894;
-}
-html[data-theme='dark'] .page-heading p {
-  color: #a1af95;
-}
-html[data-theme='dark'] .app-footer {
-  border-color: #c2d7a617;
-}
-html[data-theme='dark'] .setting-block {
-  background: #333b2c;
-  border-color: #4b5a3e;
-}
-html[data-theme='dark'] .segmented {
-  background: #293422;
-}
-html[data-theme='dark'] .segmented button.selected {
-  background: #4b5b3f;
-  color: #d4e4c4;
-}
-html[data-theme='dark'] .unavailable {
-  background: #38472c;
-}
-html[data-theme='dark'] .prototype-controls nav {
-  background: #293422c0;
-  border-color: #54674544;
-}
-html[data-theme='dark'] .control-group button.selected {
-  background: #4a5c3c;
-  color: #cbddb9;
-}
 @media (max-width: 440px) {
   body {
     padding: 23px 14px 22px;
@@ -1013,50 +935,222 @@ html[data-theme='dark'] .control-group button.selected {
 .unavailable {
   color: #7d886e;
 }
-html[data-theme='dark'] .account-subtitle,
-html[data-theme='dark'] .usage-caption,
-html[data-theme='dark'] .window-label {
-  color: #b5c1a7;
-}
-html[data-theme='dark'] .history-option,
-html[data-theme='dark'] .desktop {
-  color: #bdc8b0;
-}
 .primary {
   color: #352318;
   background: linear-gradient(155deg, #e0b18d, #d1a07b);
   text-shadow: none;
 }
+
+/* Neutral dark palette. Terracotta is the only chromatic accent. */
+.account-select-indicator {
+  width: 20px;
+  height: 20px;
+  border-width: 1px;
+  border-color: #d5d5d1;
+}
+.selected .account-select-indicator {
+  background: #b77c56;
+  border-color: #b77c56;
+  box-shadow: none;
+  color: #fff;
+}
+.account-select-indicator svg,
+.selected .account-select-indicator svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.75;
+  transform: none;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#preferences svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.5;
+}
+html[data-theme='dark'] {
+  color: #eeeeec;
+}
 html[data-theme='dark'] body {
-  background: #222321;
+  background: #181818;
 }
 html[data-theme='dark'] .app {
-  background: #292b27f5;
+  background: #222222f5;
+  border-color: #ffffff12;
+  box-shadow:
+    inset 0 1px 0 #ffffff08,
+    0 25px 60px #0003;
 }
 html[data-theme='dark'] .account {
-  background: #343731;
-  border-color: #4c5144;
+  background: #2b2b2b;
+  border-color: #3b3b3b;
 }
-html[data-theme='dark'] .icon-button {
-  color: #bac4ad;
-  background: #d4e4bc0d;
+html[data-theme='dark'] .account:hover {
+  background: #303030;
+  border-color: #4b4b4b;
+  box-shadow: 0 6px 16px #0002;
 }
-html[data-theme='dark'] .unavailable {
-  background: #3b4135;
-  color: #c3ceb5;
+html[data-theme='dark'] .account.selected {
+  border-color: #a57a5d;
+  box-shadow: 0 0 0 2px #c8926810;
 }
-html[data-theme='dark'] .unavailable strong {
-  color: #d8e0ce;
+html[data-theme='dark'] .avatar {
+  background: #c28e6420;
 }
-html[data-theme='dark'] .prototype-controls p {
-  color: #abb49e;
+html[data-theme='dark'] .account.work .avatar {
+  background: #ffffff0b;
 }
-html[data-theme='dark'] .study-label {
-  color: #929b84;
+html[data-theme='dark'] .current-badge {
+  color: #bdbdb8;
+  background: #ffffff0b;
 }
-html[data-theme='dark'] .study-label span:first-child {
-  color: #c5cdbb;
+html[data-theme='dark'] .account-subtitle,
+html[data-theme='dark'] .page-heading p,
+html[data-theme='dark'] .subheading {
+  color: #a4a4a0;
+}
+html[data-theme='dark'] .usage-labels {
+  color: #bfbfbb;
+}
+html[data-theme='dark'] .usage-left {
+  color: #d0d0ca;
+}
+html[data-theme='dark'] .usage-left.low {
+  color: #d6a784;
+}
+html[data-theme='dark'] .usage-caption,
+html[data-theme='dark'] .window-label {
+  color: #a1a19c;
+}
+html[data-theme='dark'] .progress {
+  background: #3e3e3e;
+}
+html[data-theme='dark'] .progress > span {
+  background: #a6a6a1;
+}
+html[data-theme='dark'] .progress.clay > span {
+  background: #be997c;
+}
+html[data-theme='dark'] .account-select-indicator {
+  border-color: #60605c;
+}
+html[data-theme='dark'] .selected .account-select-indicator {
+  border-color: #bf916e;
+  background: #bf916e;
+  color: #201b17;
+}
+html[data-theme='dark'] .icon-button,
+html[data-theme='dark'] .count {
+  background: #ffffff08;
+  color: #bdbdb8;
+}
+html[data-theme='dark'] .icon-button:hover,
+html[data-theme='dark'] .more:hover {
+  background: #ffffff10;
+  color: #eeeeea;
+}
+html[data-theme='dark'] .more {
+  color: #a6a6a0;
+}
+html[data-theme='dark'] .history-option,
+html[data-theme='dark'] .desktop {
+  color: #b0b0aa;
+}
+html[data-theme='dark'] .desktop:hover {
+  color: #deded8;
+}
+html[data-theme='dark'] .toggle {
+  background: #92928b;
+}
+html[data-theme='dark'] .toggle[aria-checked='false'] {
+  background: #4b4b48;
 }
 html[data-theme='dark'] .app-footer {
-  color: #a2ae93;
+  border-color: #ffffff0d;
+  color: #989891;
+}
+html[data-theme='dark'] .setting-block {
+  background: #2b2b2b;
+  border-color: #3b3b3b;
+}
+html[data-theme='dark'] .setting-block > label,
+html[data-theme='dark'] .setting-row strong {
+  color: #c7c7c1;
+}
+html[data-theme='dark'] .setting-row p,
+html[data-theme='dark'] .settings-note {
+  color: #a0a09b;
+}
+html[data-theme='dark'] .segmented {
+  background: #222;
+}
+html[data-theme='dark'] .segmented button {
+  color: #a2a29b;
+}
+html[data-theme='dark'] .segmented button.selected {
+  background: #41413e;
+  color: #e3e3dc;
+}
+html[data-theme='dark'] .settings-link {
+  color: #b9b9b2;
+  border-color: #3a3a37;
+}
+html[data-theme='dark'] .back-button {
+  color: #b1b1aa;
+}
+html[data-theme='dark'] .unavailable {
+  background: #343431;
+  color: #bababb;
+}
+html[data-theme='dark'] .unavailable strong {
+  color: #deded7;
+}
+html[data-theme='dark'] .prototype-controls nav {
+  background: #282828c0;
+  border-color: #ffffff14;
+}
+html[data-theme='dark'] .control-group button {
+  color: #acaca6;
+}
+html[data-theme='dark'] .control-group button.selected {
+  background: #41413d;
+  color: #eeeeea;
+}
+html[data-theme='dark'] .prototype-controls p {
+  color: #a0a09a;
+}
+html[data-theme='dark'] .study-label {
+  color: #92928c;
+}
+html[data-theme='dark'] .study-label span:first-child {
+  color: #c3c3bc;
+}
+html[data-theme='dark'] .account-menu {
+  background: #30302ef5;
+  border-color: #454541;
+}
+html[data-theme='dark'] .account-menu button {
+  color: #c0c0ba;
+}
+html[data-theme='dark'] .account-menu button:hover {
+  background: #ffffff09;
+}
+html[data-theme='dark'] dialog {
+  background: #292927;
+  color: #e5e5de;
+  border-color: #444440;
+}
+html[data-theme='dark'] dialog p,
+html[data-theme='dark'] dialog label {
+  color: #b0b0aa;
+}
+html[data-theme='dark'] dialog input {
+  color: #e0e0db;
+  background: #363633;
+  border-color: #4a4a44;
+}
+html[data-theme='dark'] .toast {
+  background: #44433e;
+  color: #f0efea;
 }
