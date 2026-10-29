@@ -42,7 +42,7 @@ function usage(label, remaining, reset, weekly = false) {
 }
 function compactUsage(a) {
   if (!example) return '<p class="compact-unavailable">Usage unavailable</p>'
-  return `<dl class="account-usage"><div><dt>5-hour window</dt><dd>${a.remaining}% <span>left</span></dd></div><div><dt>Weekly</dt><dd>${a.weekly}% <span>left</span></dd></div></dl>`
+  return `<dl class="account-usage"><div><dt>5-hour window</dt><dd>${a.remaining}% <span>left</span></dd><dd class="remaining-track" role="progressbar" aria-label="5-hour remaining, example data" aria-valuenow="${a.remaining}" aria-valuemin="0" aria-valuemax="100"><i style="width:${a.remaining}%"></i></dd></div><div><dt>Weekly</dt><dd>${a.weekly}% <span>left</span></dd><dd class="remaining-track weekly-track" role="progressbar" aria-label="Weekly remaining, example data" aria-valuenow="${a.weekly}" aria-valuemin="0" aria-valuemax="100"><i style="width:${a.weekly}%"></i></dd></div></dl>`
 }
 let menuTrigger = null
 // Render menus outside clipping/scroll containers, then constrain to the panel and viewport.

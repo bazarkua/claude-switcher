@@ -1468,3 +1468,39 @@ html[data-theme='dark'] .account-usage dd span {
 html[data-theme='dark'] .account-menu button:focus-visible {
   background: #ffffff0a;
 }
+.account-usage {
+  gap: 12px;
+}
+.account-usage > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 6px 16px;
+}
+.account-usage .remaining-track {
+  grid-column: 1 / -1;
+  height: 4px;
+  border-radius: 4px;
+  background: #eeede9;
+  overflow: hidden;
+  line-height: 0;
+}
+.remaining-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #c8a17e;
+  transition: width 0.35s ease;
+}
+.weekly-track i {
+  background: #b4b4ad;
+}
+html[data-theme='dark'] .remaining-track {
+  background: #3e3e3a;
+}
+html[data-theme='dark'] .remaining-track i {
+  background: #bf9a79;
+}
+html[data-theme='dark'] .weekly-track i {
+  background: #a2a29a;
+}
