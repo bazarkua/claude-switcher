@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -1044,9 +1044,480 @@
           scroll-behavior: auto !important;
         }
       }
+
+      /* Study 02: graphite, paper, and terracotta. */
+      :root {
+        --clay: #d49a7e;
+        --paper: #e7e2d9;
+      }
+      body,
+      html[data-theme='light'] body {
+        background: #22211f;
+        background-image: none;
+      }
+      .scene {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+      body {
+        isolation: isolate;
+      }
+      .study {
+        font-size: 12px;
+        color: #8e8982;
+      }
+      .study span {
+        color: #d4cfc6;
+      }
+      .phone {
+        --base: #171614;
+        --text: #eeeae3;
+        --muted: #a09a90;
+        background: #171614dc;
+        backdrop-filter: blur(40px) saturate(0.6);
+        border-color: #e4d8c121;
+        border-radius: 30px;
+        padding: 27px 23px 20px;
+        box-shadow:
+          inset 0 1px 0 #fff1,
+          0 30px 80px #0005,
+          0 0 0 5px #0000000b;
+      }
+      .phone::before {
+        content: '';
+        position: absolute;
+        inset: -60%;
+        pointer-events: none;
+        background:
+          radial-gradient(ellipse at 35% 65%, #ce97721c, transparent 42%),
+          radial-gradient(ellipse at 70% 30%, #d9d2c30d, transparent 35%);
+        animation: glass-drift 18s ease-in-out infinite alternate;
+        z-index: -1;
+      }
+      @keyframes glass-drift {
+        from {
+          transform: translate(-4%, -3%) rotate(-8deg);
+        }
+        to {
+          transform: translate(5%, 5%) rotate(9deg);
+        }
+      }
+      .wordmark {
+        gap: 9px;
+        font-size: 17px;
+        letter-spacing: -0.6px;
+        font-weight: 400;
+      }
+      .wordmark .brand-name {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 20px;
+        letter-spacing: -0.8px;
+      }
+      .wordmark .brand-separator {
+        height: 14px;
+        width: 1px;
+        background: #8c82774d;
+        margin: 0 1px;
+      }
+      .wordmark .brand-product {
+        font-size: 12px;
+        font-weight: 450;
+        letter-spacing: -0.1px;
+        color: #a7a196;
+      }
+      .mark {
+        display: none;
+      }
+      .circle {
+        background: #e0d8c609;
+        color: #bcb6ac;
+      }
+      .circle:hover {
+        background: #e0d8c615;
+      }
+      .heading {
+        margin-top: 34px;
+        margin-bottom: 23px;
+        align-items: center;
+      }
+      .heading h1 {
+        font-size: 25px;
+        font-weight: 430;
+        letter-spacing: -0.8px;
+      }
+      .heading p {
+        color: #918b82;
+        font-size: 11px;
+      }
+      .profile,
+      html[data-theme='light'] .profile {
+        height: 267px;
+        border-radius: 30px;
+        background: #29251ed0;
+        border: 1px solid #d5c6b43b;
+        box-shadow:
+          inset 0 1px 2px #eadfca31,
+          inset 0 0 24px #bb957319,
+          0 12px 20px #0002;
+      }
+      .profile::before,
+      html[data-theme='light'] .profile::before {
+        background:
+          radial-gradient(ellipse 100% 55% at 30% -17%, #d7b9a899, #7c665c66 38%, transparent 85%),
+          radial-gradient(ellipse 25% 120% at -13% 65%, #c7a28d77, transparent 80%),
+          radial-gradient(ellipse 35% 120% at 120% 95%, #b2a69544, transparent 85%),
+          linear-gradient(135deg, #37302ac9, #24201dda 55%, #28231fbd);
+      }
+      .profile.work::before,
+      html[data-theme='light'] .profile.work::before {
+        background:
+          radial-gradient(ellipse 100% 55% at 45% -17%, #d7cfc599, #77777266 38%, transparent 85%),
+          radial-gradient(ellipse 25% 120% at -13% 65%, #c2bfb477, transparent 80%),
+          radial-gradient(ellipse 35% 120% at 120% 95%, #9b978f44, transparent 85%),
+          linear-gradient(135deg, #353634c9, #222321da 55%, #272825bd);
+      }
+      .profile::after,
+      html[data-theme='light'] .profile::after {
+        border-radius: 29px;
+        border-color: #e7d4bf12;
+        box-shadow:
+          inset 0 0 10px #e8c5a911,
+          inset 0 1px 0 #f3e8db30;
+        background: linear-gradient(115deg, #ffffff03, transparent 50%);
+      }
+      .profile:not(.selected),
+      html[data-theme='light'] .profile:not(.selected) {
+        filter: saturate(0.5) brightness(0.85);
+      }
+      .profile-top {
+        top: 24px;
+        left: 26px;
+        right: 23px;
+      }
+      .profile-top > span {
+        font-size: 10px;
+        color: #c4b7a8;
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        letter-spacing: 0.8px;
+      }
+      .profile-menu {
+        color: #c4b7a8;
+      }
+      .profile-center,
+      .empty .profile-center {
+        top: 91px;
+        left: 26px;
+        right: 23px;
+        text-align: left;
+      }
+      .matrix {
+        display: none;
+      }
+      .profile-name,
+      .empty .profile-name {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 39px;
+        line-height: 1.1;
+        font-weight: 400;
+        letter-spacing: -1.5px;
+        margin: 0 0 13px;
+        color: #f0e8dd;
+      }
+      .profile-sub,
+      html[data-theme='light'] .profile-sub {
+        font-size: 12px;
+        color: #b4a99a;
+        letter-spacing: 0;
+      }
+      .profile-bottom,
+      html[data-theme='light'] .profile-bottom {
+        left: 26px;
+        right: 24px;
+        bottom: 25px;
+        font-size: 10px;
+        color: #a69a8d;
+      }
+      .selected-dot {
+        background: #cfa88b;
+        box-shadow: none;
+      }
+      .profile-trace {
+        left: 0;
+        right: 0;
+        height: 110px;
+        background: repeating-linear-gradient(
+          170deg,
+          transparent,
+          transparent 18px,
+          #d6b49608 19px,
+          transparent 20px
+        );
+        mask-image: linear-gradient(transparent, #0007);
+      }
+      .pagination button {
+        background: #c7b49b38;
+      }
+      .pagination button.active {
+        background: #d8b99d;
+      }
+      .context-line {
+        margin: 26px 3px 22px;
+        gap: 9px;
+      }
+      .context-line p,
+      html[data-theme='light'] .context-line p {
+        color: #ada498;
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .context-line p span {
+        color: #807970;
+      }
+      .context-line svg {
+        color: #b3957d;
+      }
+      .switch-panel,
+      html[data-theme='light'] .switch-panel {
+        border-radius: 27px;
+        background: #24211de0;
+        border-color: #bfa68c38;
+        box-shadow:
+          inset 0 1px 2px #e3d2b929,
+          inset 0 0 18px #cda67d0a;
+        padding: 19px 16px 15px;
+      }
+      .switch-panel::before,
+      html[data-theme='light'] .switch-panel::before {
+        background:
+          radial-gradient(ellipse 110% 95% at 45% -55%, #c6a08366, transparent 85%),
+          linear-gradient(120deg, #312b2480, #1f1c1980);
+      }
+      .switch-meta,
+      html[data-theme='light'] .switch-meta {
+        font-size: 11px;
+        color: #c2b4a4;
+      }
+      .switch-meta svg,
+      html[data-theme='light'] .switch-meta svg {
+        color: #ba9b80;
+      }
+      .switch-meta .scope-label,
+      html[data-theme='light'] .switch-meta .scope-label {
+        font-size: 10px;
+        color: #8d8174;
+      }
+      .sync-toggle,
+      html[data-theme='light'] .sync-toggle {
+        color: #aa9987;
+        background: #cab49410;
+      }
+      .switch-main,
+      html[data-theme='light'] .switch-main {
+        background: #d4a27e;
+        color: #292018;
+        font-size: 12px;
+        font-weight: 500;
+        box-shadow:
+          inset 0 1px 0 #f5d9bd7a,
+          0 3px 8px #0001;
+      }
+      .switch-main:hover,
+      html[data-theme='light'] .switch-main:hover {
+        background: #dfaf8d;
+      }
+      .switch-main .arrow,
+      html[data-theme='light'] .switch-main .arrow {
+        background: #32281e;
+        color: #e7c7ab;
+        box-shadow: none;
+      }
+      .open-desktop,
+      html[data-theme='light'] .open-desktop {
+        color: #9b9185;
+        font-size: 11px;
+        margin-top: 21px;
+      }
+      .bottom,
+      html[data-theme='light'] .bottom {
+        color: #71695f;
+        font-size: 9px;
+      }
+      .settings-screen {
+        background: #171614;
+      }
+      .settings-screen h2 {
+        font-family: Georgia, serif;
+        font-size: 30px;
+      }
+      .settings-label {
+        font-size: 11px;
+      }
+      .appearance button,
+      html[data-theme='light'] .appearance button {
+        color: #aaa094;
+        border-color: #c5ae8e27;
+      }
+      .appearance button.active,
+      html[data-theme='light'] .appearance button.active {
+        color: #e0c1a4;
+        border-color: #c49e7466;
+        background: #9c70451c;
+      }
+      .setting-row {
+        border-color: #cdb18d12;
+      }
+      .toggle {
+        background: #b78c6c;
+      }
+      .setting-link {
+        color: #b1a392;
+        border-color: #cdb18d12;
+      }
+      .settings-foot {
+        color: #8c8174;
+      }
+      .toast,
+      html[data-theme='light'] .toast {
+        background: #322b24ef;
+        border-color: #d2b29029;
+        color: #d6c6b4;
+      }
+      .dialog,
+      html[data-theme='light'] .dialog {
+        background: #27221def;
+        border-color: #c3a07d38;
+      }
+      .dialog h2 {
+        font-family: Georgia, serif;
+        font-size: 26px;
+      }
+      .dialog p,
+      .dialog label {
+        color: #aa9b8a;
+      }
+      .dialog-actions button:last-child {
+        background: #cfa07a;
+        color: #2b2118;
+      }
+      .toolbar {
+        background: #292621e8;
+        border-color: #d2b3941f;
+      }
+      .toolbar button.active {
+        color: #d7b493;
+        background: #c7a17c14;
+      }
+      .toolbar button {
+        color: #958778;
+      }
+      .sample-note {
+        color: #84796d;
+        font-size: 10px;
+      }
+      html[data-theme='light'] body {
+        background: #e3dfd7;
+      }
+      html[data-theme='light'] .phone {
+        --base: #ede9e0;
+        --text: #39342e;
+        --muted: #84796e;
+        background: #eeebe2df;
+        border-color: #fff9;
+        box-shadow:
+          inset 0 1px 2px #fff,
+          0 30px 80px #4a382a21,
+          0 0 0 5px #fff2;
+      }
+      html[data-theme='light'] .brand-product {
+        color: #8e7d6c;
+      }
+      html[data-theme='light'] .heading p {
+        color: #918272;
+      }
+      html[data-theme='light'] .profile {
+        background: #d8cab8b8;
+        border-color: #fff9;
+        box-shadow:
+          inset 0 1px 3px #ffffffbf,
+          0 8px 20px #66533e0c;
+      }
+      html[data-theme='light'] .profile::before {
+        opacity: 0.24;
+      }
+      html[data-theme='light'] .profile.work::before {
+        opacity: 0.18;
+      }
+      html[data-theme='light'] .profile-name {
+        color: #4f4035;
+      }
+      html[data-theme='light'] .profile-sub {
+        color: #877463;
+      }
+      html[data-theme='light'] .profile-top > span,
+      html[data-theme='light'] .profile-menu {
+        color: #937b65;
+      }
+      html[data-theme='light'] .profile-bottom {
+        color: #8d7967;
+      }
+      html[data-theme='light'] .context-line p {
+        color: #8b7966;
+      }
+      html[data-theme='light'] .context-line p span {
+        color: #aaa092;
+      }
+      html[data-theme='light'] .switch-panel {
+        background: #ded3c2b8;
+        border-color: #fff9;
+        box-shadow: inset 0 1px 3px #fff9;
+      }
+      html[data-theme='light'] .switch-panel::before {
+        opacity: 0.24;
+      }
+      html[data-theme='light'] .switch-meta {
+        color: #8e7862;
+      }
+      html[data-theme='light'] .scope-label {
+        color: #a48b73;
+      }
+      html[data-theme='light'] .sync-toggle {
+        background: #fff3;
+        color: #9d7f64;
+      }
+      html[data-theme='light'] .settings-screen {
+        background: #ede9e0;
+      }
+      html[data-theme='light'] .appearance button.active {
+        color: #8a6040;
+      }
+      html[data-theme='light'] .dialog {
+        background: #eee6daef;
+      }
+      html[data-theme='light'] .toolbar {
+        background: #e7dfd4e8;
+        border-color: #fff9;
+      }
+      html[data-theme='light'] .toolbar button.active {
+        color: #88674a;
+        background: #b38f6e21;
+      }
+      html[data-theme='light'] .study span {
+        color: #75614f;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .phone::before {
+          animation: none;
+        }
+      }
     </style>
+    <link rel="stylesheet" href="study-03.css" />
   </head>
   <body>
+    <canvas class="scene" id="scene" aria-hidden="true"></canvas>
     <svg style="display: none" aria-hidden="true">
       <defs>
         <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
@@ -1078,14 +1549,13 @@
         </symbol>
       </defs>
     </svg>
-    <div class="study"><span>Claude Switcher</span>Interface study / 01</div>
+    <div class="study"><span>Claude Switcher</span>Interface study / 03</div>
     <main class="phone" aria-label="Claude Switcher interactive design prototype">
       <header class="top">
         <div class="wordmark">
-          <div class="mark" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-          </div>
-          Claude Switcher
+          <img class="brand-icon" src="logo-v2.png" alt="" /><span class="brand-name"
+            >Claude Switcher</span
+          ><i class="brand-separator"></i><span class="brand-product">switcher</span>
         </div>
         <div class="top-actions">
           <button class="circle" id="settingsButton" aria-label="Preferences">
@@ -1098,8 +1568,9 @@
       <div class="screen" id="accountsScreen">
         <div class="heading">
           <h1>Accounts</h1>
-          <p id="profileCount">02 profiles on this device</p>
+          <p id="profileCount">2 profiles</p>
         </div>
+        <p class="page-description">Choose an account to open in Claude.</p>
         <div class="carousel" id="carousel"></div>
         <div class="pagination" id="pagination"></div>
         <div class="context-line">
@@ -1263,17 +1734,17 @@
         const empty = !accounts.length
         $('carousel').classList.toggle('empty', empty)
         $('profileCount').textContent =
-          String(accounts.length).padStart(2, '0') + ' profiles on this device'
+          accounts.length + (accounts.length === 1 ? ' profile' : ' profiles')
         $('populated').classList.toggle('active', !empty)
         $('emptyState').classList.toggle('active', empty)
         if (empty) {
           $('carousel').innerHTML =
-            `<article class="profile selected"><div class="profile-top"><span>A profile of your own</span></div><div class="profile-center">${matrix('00')}<h2 class="profile-name">No accounts yet</h2><p class="profile-sub">Add an account to get started</p></div><div class="profile-trace"></div><div class="profile-bottom">Authentication is handled by Claude</div></article>`
+            `<article class="profile selected"><div class="profile-top"><span>YOUR FIRST PROFILE</span></div><div class="profile-center">${matrix('00')}<h2 class="profile-name">No accounts yet</h2><p class="profile-sub">Add an account to get started</p></div><div class="profile-trace"></div><div class="profile-bottom">Authentication is handled by Claude</div></article>`
         } else {
           $('carousel').innerHTML = accounts
             .map(
               (a, i) =>
-                `<article class="profile ${a.tone} ${selected === i ? 'selected' : ''}" data-index="${i}" tabindex="0" aria-label="Select ${esc(a.name)}"><div class="profile-top"><span>${a.open ? 'Current profile' : 'Separate profile'}</span><button class="profile-menu" aria-label="Manage ${esc(a.name)}" data-menu="${i}">···</button></div><div class="profile-center">${matrix(String(i + 1).padStart(2, '0'))}<h2 class="profile-name">${esc(a.name)}</h2><p class="profile-sub">${a.open ? 'Open in Claude' : 'Sign-in unverified'}</p></div><div class="profile-trace"></div><div class="profile-bottom"><span>Usage unavailable</span><span class="selected-label">${selected === i ? '<i class="selected-dot"></i>Selected' : ''}</span></div></article>`,
+                `<article data-initial="${esc(a.name.slice(0, 1).toUpperCase())}" class="profile ${a.tone} ${selected === i ? 'selected' : ''}" data-index="${i}" tabindex="0" aria-label="Select ${esc(a.name)}"><div class="profile-top"><span>PROFILE ${String(i + 1).padStart(2, '0')}</span><button class="profile-menu" aria-label="Manage ${esc(a.name)}" data-menu="${i}">···</button></div><div class="profile-center">${matrix(String(i + 1).padStart(2, '0'))}<h2 class="profile-name">${esc(a.name)}</h2><p class="profile-sub">${a.open ? 'Open in Claude' : 'Sign-in unverified'}</p></div><div class="profile-trace"></div><div class="profile-bottom"><span>Usage unavailable</span><span class="selected-label">${selected === i ? '<i class="selected-dot"></i>Selected' : ''}</span></div></article>`,
             )
             .join('')
         }
@@ -1444,6 +1915,82 @@
           add()
         }
       })
+
+      const scene = $('scene'),
+        ctx = scene.getContext('2d')
+      let sceneW = 0,
+        sceneH = 0,
+        pointerX = 0.5,
+        pointerY = 0.5,
+        lastFrame = 0
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)')
+      function resizeScene() {
+        sceneW = innerWidth
+        sceneH = innerHeight
+        scene.width = Math.round(sceneW * devicePixelRatio)
+        scene.height = Math.round(sceneH * devicePixelRatio)
+        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
+      }
+      addEventListener('resize', resizeScene)
+      addEventListener(
+        'pointermove',
+        (e) => {
+          pointerX = e.clientX / innerWidth
+          pointerY = e.clientY / innerHeight
+        },
+        { passive: true },
+      )
+      function drawScene(time) {
+        if (time - lastFrame < 40 && !reduced.matches) {
+          requestAnimationFrame(drawScene)
+          return
+        }
+        lastFrame = time
+        const t = reduced.matches ? 0 : time * 0.000085,
+          light = document.documentElement.dataset.theme === 'light'
+        ctx.clearRect(0, 0, sceneW, sceneH)
+        ctx.fillStyle = light ? '#e8e8e6' : '#22211f'
+        ctx.fillRect(0, 0, sceneW, sceneH)
+        for (let j = 0; j < 5; j++) {
+          const x =
+            sceneW * (0.12 + j * 0.22) +
+            Math.sin(t + j * 1.7) * sceneW * 0.16 +
+            (pointerX - 0.5) * 30
+          const y = sceneH * (0.35 + Math.cos(t * 0.8 + j) * 0.25) + (pointerY - 0.5) * 25
+          const radius = sceneW * (0.32 + j * 0.03)
+          const g = ctx.createRadialGradient(x, y, 0, x, y, radius)
+          g.addColorStop(
+            0,
+            light ? (j % 2 ? '#bca08332' : '#ffffff77') : j % 2 ? '#b0774d23' : '#a5a09013',
+          )
+          g.addColorStop(1, '#00000000')
+          ctx.fillStyle = g
+          ctx.fillRect(0, 0, sceneW, sceneH)
+        }
+        ctx.lineCap = 'round'
+        for (let j = 0; j < 22; j++) {
+          ctx.beginPath()
+          const base = sceneH * 0.3 + j * 12
+          for (let x = -100; x <= sceneW + 100; x += 20) {
+            const y =
+              base +
+              Math.sin((x / sceneW) * 4.5 + t + j * 0.035) * sceneH * 0.2 +
+              Math.cos((x / sceneW) * 2.2 - t * 0.7) * sceneH * 0.12
+            if (x === -100) ctx.moveTo(x, y)
+            else ctx.lineTo(x, y)
+          }
+          ctx.strokeStyle = light
+            ? `rgba(143,111,81,${0.012 + (j / 22) * 0.018})`
+            : `rgba(190,157,121,${0.008 + (j / 22) * 0.018})`
+          ctx.lineWidth = 1
+          ctx.stroke()
+        }
+        requestAnimationFrame(drawScene)
+      }
+      resizeScene()
+      requestAnimationFrame(drawScene)
+
+      theme('light')
       render()
     </script>
   </body>
