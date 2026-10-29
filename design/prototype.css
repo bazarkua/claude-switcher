@@ -1405,3 +1405,66 @@ html[data-theme='dark'] .compact-unavailable {
     width: 100%;
   }
 }
+/* Usage is a short, aligned list. Reset schedules live in Settings. */
+.account-usage {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.account-usage > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.account-usage dt {
+  font-size: 11px;
+  line-height: 16px;
+  color: #898983;
+}
+.account-usage dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #5c5b56;
+  font-variant-numeric: tabular-nums;
+}
+.account-usage dd span {
+  font-size: 10px;
+  font-weight: 400;
+  color: #a09e96;
+  margin-left: 2px;
+}
+html[data-theme='dark'] .account-usage dt {
+  color: #aaa9a2;
+}
+html[data-theme='dark'] .account-usage dd {
+  color: #d9d6cb;
+}
+html[data-theme='dark'] .account-usage dd span {
+  color: #9d9b91;
+}
+.account-menu {
+  position: fixed;
+  right: auto;
+  z-index: 100;
+  width: 188px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow:
+    0 5px 24px #00000014,
+    0 1px 5px #00000006;
+  border-color: #e7e5df;
+}
+.account-menu button {
+  color: #79766e;
+}
+.account-menu button:hover,
+.account-menu button:focus-visible {
+  background: #f3f2ee;
+}
+html[data-theme='dark'] .account-menu button:focus-visible {
+  background: #ffffff0a;
+}

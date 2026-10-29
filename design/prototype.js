@@ -42,8 +42,61 @@ function usage(label, remaining, reset, weekly = false) {
 }
 function compactUsage(a) {
   if (!example) return '<p class="compact-unavailable">Usage unavailable</p>'
-  return `<div class="compact-usage"><div><span>5-hour <strong>${a.remaining}% left</strong></span><i style="--value:${a.remaining}%"></i></div><div><span>Weekly <strong>${a.weekly}% left</strong></span><i style="--value:${a.weekly}%"></i></div></div>`
+  return `<dl class="account-usage"><div><dt>5-hour window</dt><dd>${a.remaining}% <span>left</span></dd></div><div><dt>Weekly</dt><dd>${a.weekly}% <span>left</span></dd></div></dl>`
 }
+let menuTrigger = null
+// Render menus outside clipping/scroll containers, then constrain to the panel and viewport.
+document.body.appendChild($('account-menu'))
+$('account-menu').setAttribute('role', 'menu')
+$('account-menu')
+  .querySelectorAll('button')
+  .forEach((button) => button.setAttribute('role', 'menuitem'))
+function showAccountMenu(button) {
+  const menu = $('account-menu')
+  if (!menu.hidden && menuTrigger === button) {
+    menu.hidden = true
+    return
+  }
+  menuId = Number(button.dataset.menu)
+  menuTrigger = button
+  menu.hidden = false
+  const anchor = button.getBoundingClientRect()
+  const panel = document.querySelector('.app').getBoundingClientRect()
+  const margin = 12
+  const leftEdge = Math.max(margin, panel.left + margin)
+  const rightEdge = Math.min(innerWidth - margin, panel.right - margin)
+  const topEdge = Math.max(margin, panel.top + margin)
+  const bottomEdge = Math.min(innerHeight - margin, panel.bottom - margin)
+  menu.style.maxWidth = `${Math.max(140, rightEdge - leftEdge)}px`
+  menu.style.maxHeight = `${Math.max(80, bottomEdge - topEdge)}px`
+  const width = menu.offsetWidth,
+    height = menu.offsetHeight
+  const below = anchor.bottom + 6
+  const top = below + height <= bottomEdge ? below : anchor.top - height - 6
+  menu.style.left = `${Math.max(leftEdge, Math.min(anchor.right - width, rightEdge - width))}px`
+  menu.style.top = `${Math.max(topEdge, Math.min(top, bottomEdge - height))}px`
+  menu.querySelector('button').focus({ preventScroll: true })
+}
+$('account-menu').addEventListener('keydown', (event) => {
+  const buttons = [...$('account-menu').querySelectorAll('button')]
+  const current = buttons.indexOf(document.activeElement)
+  if (event.key === 'Escape') {
+    event.stopPropagation()
+    $('account-menu').hidden = true
+    menuTrigger?.focus({ preventScroll: true })
+  } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault()
+    buttons[
+      (current + (event.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length
+    ].focus()
+  }
+})
+addEventListener('resize', () => {
+  $('account-menu').hidden = true
+})
+$('preferences-view').addEventListener('scroll', () => {
+  $('account-menu').hidden = true
+})
 function renderDetails() {
   $('usage-details').innerHTML = accounts
     .map(
@@ -92,11 +145,7 @@ $('accounts').addEventListener('click', (event) => {
   const menu = event.target.closest('[data-menu]')
   if (menu) {
     event.stopPropagation()
-    menuId = Number(menu.dataset.menu)
-    const box = menu.getBoundingClientRect(),
-      app = $('accounts').closest('.app').getBoundingClientRect()
-    $('account-menu').style.top = `${box.bottom - app.top + 5}px`
-    $('account-menu').hidden = false
+    showAccountMenu(menu)
     return
   }
   const card = event.target.closest('[data-account]')
@@ -303,12 +352,7 @@ document.querySelector('.settings-tabs').addEventListener('click', (e) => {
     $('tab-' + tab).hidden = tab !== button.dataset.tab
 })
 $('settings-add').onclick = () => openAccount()
-$('settings-accounts').addEventListener('click', (e) => {
-  const button = e.target.closest('[data-menu]')
-  if (!button) return
-  menuId = Number(button.dataset.menu)
-  const bounds = button.getBoundingClientRect(),
-    app = document.querySelector('.app').getBoundingClientRect()
-  $('account-menu').style.top = `${bounds.bottom - app.top + 5}px`
-  $('account-menu').hidden = false
+$('settings-accounts').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-menu]')
+  if (button) showAccountMenu(button)
 })
