@@ -153,7 +153,6 @@ $('switch').onclick = async () => {
   if (busy) return
   busy = true
   $('switch').disabled = true
-  $('switch').querySelector('svg').classList.add('spin')
   const target = accounts.find((a) => a.id === selected)
   for (const label of ['Checking local history', 'Opening ' + target.name]) {
     $('switch-text').textContent = label
@@ -162,7 +161,6 @@ $('switch').onclick = async () => {
   accounts.forEach((a) => (a.current = a.id === selected))
   busy = false
   $('switch').disabled = false
-  $('switch').querySelector('svg').classList.remove('spin')
   render()
   notify('Demo switch complete. No real account was opened.')
 }

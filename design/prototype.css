@@ -848,14 +848,6 @@ dialog input {
   color: #a7b39b;
   margin: 10px 0;
 }
-.spin {
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 @keyframes fill-in {
   from {
     width: 0;
@@ -1153,4 +1145,8 @@ html[data-theme='dark'] dialog input {
 html[data-theme='dark'] .toast {
   background: #44433e;
   color: #f0efea;
+}
+
+.primary:disabled svg {
+  transform: none;
 }
